@@ -14,19 +14,39 @@
 
 ## Эндпоинты
 
-### Карточки товаров
+<!-- AUTO:BEGIN spec=02-items section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/content/v1/brands` | Бренды |
+| POST | `/content/v2/cards/error/list` | Список несозданных карточек товаров с ошибками |
+| GET | `/content/v2/directory/colors` | Цвет |
+| GET | `/content/v2/directory/countries` | Страна производства |
+| GET | `/content/v2/directory/kinds` | Пол |
+| GET | `/content/v2/directory/seasons` | Сезон |
+| GET | `/content/v2/directory/tnved` | ТНВЭД-код |
+| GET | `/content/v2/directory/vat` | Ставка НДС |
+| POST | `/content/v2/get/cards/list` | Список карточек товаров |
+| GET | `/content/v2/object/all` | Список предметов |
+| GET | `/content/v2/object/charcs/{subjectId}` | Характеристики предмета |
+| GET | `/content/v2/object/parent/all` | Родительские категории товаров |
+| POST | `/content/v2/tag` | Создание ярлыка |
+| POST | `/content/v2/tag/nomenclature/link` | Управление ярлыками в карточке товара |
+| DELETE | `/content/v2/tag/{id}` | Удаление ярлыка |
+| PATCH | `/content/v2/tag/{id}` | Изменение ярлыка |
+| GET | `/content/v2/tags` | Список ярлыков |
+<!-- AUTO:END -->
 
-| Метод | Путь | Назначение | Параметры | Пагинация |
-|---|---|---|---|---|
-| POST | /content/v2/cards/cursor/list | Список карточек | limit, cursor, sort | cursor |
-| POST | /content/v2/get/cards/list | Список карточек (альт.) | limit, offset | offset |
-| GET | /content/v2/cards/error/list | Карточки с ошибками | limit, offset, type | offset |
-| POST | /content/v2/cards/update | Обновить карточку | объект с полями товара | — |
-| POST | /content/v2/cards/upload/add | Добавить товар к карточке | объект товара с nmID/SKU | — |
-| POST | /content/v2/cards/upload | Загрузить новый товар | объект товара | — |
-| POST | /content/v2/cards/delete/trash | Переместить в корзину | nmID | — |
-| POST | /content/v2/cards/recover | Восстановить из корзины | nmID | — |
-| POST | /content/v2/get/cards/trash | Карточки из корзины | limit, offset | offset |
+> **Примечание — операции записи карточек вне снапшота спеки `02-items` (сохранено из прежнего справочника, проверь вживую):**
+> Авто-таблица из спеки покрывает справочники, характеристики, предметы, теги и чтение списков
+> карточек (`POST /content/v2/get/cards/list`, `POST /content/v2/cards/error/list`), но НЕ операции
+> записи. Их пути:
+> - `POST /content/v2/cards/cursor/list` — список карточек, пагинация cursor (`limit`, `cursor`, `sort`)
+> - `POST /content/v2/cards/update` — обновить карточку (объект с полями товара)
+> - `POST /content/v2/cards/upload/add` — добавить товар к карточке (объект с nmID/SKU)
+> - `POST /content/v2/cards/upload` — загрузить новый товар
+> - `POST /content/v2/cards/delete/trash` — переместить в корзину (nmID)
+> - `POST /content/v2/cards/recover` — восстановить из корзины (nmID)
+> - `POST /content/v2/get/cards/trash` — карточки из корзины (`limit`, `offset`)
 
 ### Медиа
 
@@ -51,31 +71,15 @@ https://eslazarev.github.io/wildberries-sdk/reference/items/post_content_v3_medi
 (dev.wildberries.ru отдаёт 498/требует логин при прямом обращении — не перепроверено live-токеном,
 перепроверить при первой реальной интеграции).
 
-### Штрих-коды
-
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /content/v2/barcodes | Генерация штрих-кодов | nmID, quantity |
-
-### Теги
-
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /content/v2/tags | Список тегов | — |
-| POST | /content/v2/tag | Создать тег | name, description |
-| PATCH | /content/v2/tag/{id} | Изменить тег | name, description |
-| DELETE | /content/v2/tag/{id} | Удалить тег | — |
-| POST | /content/v2/tag/nomenclature/link | Привязать тег к товару | nmID, tagId |
-
-### Справочники
-
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /content/v1/directory/brands | Справочник брендов | query, limit, offset |
-| GET | /content/v1/directory/colors | Справочник цветов | query, limit |
-| GET | /content/v1/directory/sizes | Справочник размеров | query, limit |
-| GET | /content/v1/directory/collections | Справочник коллекций | — |
-| GET | /content/v2/catalog | Структура каталога | — |
+> **Примечание — штрих-коды, теги и справочники (сохранено из прежнего справочника):**
+> - **Теги** (`GET /content/v2/tags`, `POST /content/v2/tag`, `PATCH`/`DELETE /content/v2/tag/{id}`,
+>   `POST /content/v2/tag/nomenclature/link`) — уже в авто-таблице выше (спека их содержит).
+> - `GET /content/v2/barcodes` — генерация штрих-кодов (`nmID`, `quantity`) — **в спеке нет**, оставлен вручную.
+> - Справочники, отсутствующие в авто-таблице: `GET /content/v1/directory/sizes` (размеры),
+>   `GET /content/v1/directory/collections` (коллекции), `GET /content/v2/catalog` (структура каталога).
+>   В спеке справочники — версии v2 (`/content/v2/directory/{colors,countries,kinds,seasons,tnved,vat}`),
+>   а бренды — на `/api/content/v1/brands`; прежний справочник указывал бренды/цвета на
+>   `/content/v1/directory/*` (устаревшая нотация).
 
 ## Пример: получить карточки товаров
 

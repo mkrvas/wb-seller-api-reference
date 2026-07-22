@@ -37,13 +37,26 @@
 
 ## Эндпоинты
 
-| Метод | Путь | Назначение | Параметры | Пагинация |
-|---|---|---|---|---|
-| GET | /api/v5/supplier/reportDetailByPeriod | ⚠️ **DEPRECATED до 15.07.2026** — см. [Finance API](12a-finance.md) | dateFrom, dateTo, rrdid, limit | rrdid |
-| GET | /api/v1/supplier/stocks | Остатки на складах WB | — | offset (лимит 60000) |
-| GET | /api/v1/supplier/orders | Заказы покупателей | dateFrom, dateTo | — |
-| GET | /api/v1/supplier/sales | Продажи и возвраты | dateFrom, dateTo | — |
-| GET | /api/v1/supplier/incomes | Поставки товара | dateFrom, dateTo | — |
+<!-- AUTO:BEGIN spec=12-reports section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/v1/supplier/orders` | Заказы |
+| GET | `/api/v1/supplier/sales` | Продажи |
+<!-- AUTO:END -->
+
+> **Примечание (эндпоинты вне авто-таблицы — их НЕТ в снапшоте спеки, сохранено из прежнего справочника):**
+> В официальной спеке `12-reports` под хостом `statistics-api.wildberries.ru` есть только
+> `supplier/orders` и `supplier/sales`. Остальные исторические эндпоинты этого хоста в спеку не
+> попали и остаются здесь вручную:
+> - `GET /api/v5/supplier/reportDetailByPeriod` — ⚠️ **DEPRECATED, отключение 15.07.2026**
+>   (параметры `dateFrom`, `dateTo`, `rrdid`, `limit`; пагинация по `rrdid`; лимит 1 запр/мин).
+>   Замена — Finance API (`12a-finance.md`). Подробный разбор — в разделе ниже.
+> - `GET /api/v1/supplier/stocks` — остатки на складах WB (пагинация `offset`, лимит ответа 60000
+>   строк, лимит 3 запр/30 сек). ⚠️ По вторичному сигналу мог быть заменён 23.06.2026 на
+>   `POST /api/analytics/v1/stocks-report/wb-warehouses` (Analytics API) — проверь вживую. Разбор ниже.
+> - `GET /api/v1/supplier/incomes` — поставки товара на склады WB (параметры `dateFrom`, `dateTo`;
+>   лимит 1 запр/мин).
+> - `supplier/orders` и `supplier/sales` дополнительно разобраны в разделах ниже (лимит 1 запр/мин каждый).
 
 ---
 

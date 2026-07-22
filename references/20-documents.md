@@ -19,10 +19,24 @@
 
 ## Эндпоинты
 
-| Метод | Путь | Назначение | Параметры | Пагинация |
-|---|---|---|---|---|
-| GET | /api/v1/documents | Список документов | limit, offset, type | offset |
-| GET | /api/v1/documents/{id} | Скачать документ | documentId | — |
+<!-- AUTO:BEGIN spec=13-finances section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/v1/documents/categories` | Категории документов |
+| GET | `/api/v1/documents/download` | Получить документ |
+| POST | `/api/v1/documents/download/all` | Получить документы |
+| GET | `/api/v1/documents/list` | Список документов |
+<!-- AUTO:END -->
+
+> **Примечание (сохранено из прежнего справочника):**
+> - Эндпоинты документов приходят из спеки `13-finances` (тот же портальный раздел, что и Finance),
+>   но хост — `documents-api.wildberries.ru`.
+> - Спека (снапшот 2026-07-22) подтвердила актуальные пути: `GET /api/v1/documents/categories`,
+>   `GET /api/v1/documents/list`, `GET /api/v1/documents/download` (один документ),
+>   `POST /api/v1/documents/download/all` (массово, до 50). Прежний справочник описывал
+>   `GET /api/v1/documents` и `GET /api/v1/documents/{id}` — они **заменены** путями выше.
+> - Rate limit по вторичному источнику: 1 запр/10 сек (burst 5) для Personal/Service/Basic+Secret,
+>   1 запр/24ч для Basic (прежняя запись «3 запр/30 сек» не подтверждена — проверь вживую).
 
 ## Пример
 

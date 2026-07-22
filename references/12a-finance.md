@@ -19,27 +19,27 @@
 
 ## Эндпоинты
 
-### Баланс
-
+<!-- AUTO:BEGIN spec=13-finances section=endpoints -->
 | Метод | Путь | Назначение |
 |---|---|---|
-| GET | `/api/v1/account/balance` | Текущий баланс + к выводу |
+| POST | `/api/finance/v1/acquiring/detailed` | Детализации к отчётам об издержках на приём платежей за период |
+| POST | `/api/finance/v1/acquiring/detailed/{reportId}` | Детализации к отчётам об издержках на приём платежей по ID отчётов |
+| POST | `/api/finance/v1/acquiring/list` | Список отчётов об издержках на приём платежей |
+| POST | `/api/finance/v1/sales-reports/detailed` | Детализации к отчётам реализации за период |
+| POST | `/api/finance/v1/sales-reports/detailed/{reportId}` | Детализации к отчётам реализации по ID отчётов |
+| POST | `/api/finance/v1/sales-reports/list` | Список отчётов реализации |
+| GET | `/api/v1/account/balance` | Получить баланс продавца |
+<!-- AUTO:END -->
 
-### Отчёты реализации
-
-| Метод | Путь | Назначение |
-|---|---|---|
-| POST | `/api/finance/v1/sales-reports/list` | **Список отчётов** (daily / weekly) |
-| POST | `/api/finance/v1/sales-reports/detailed/{reportId}` | **Детализация по ID отчёта** |
-| POST | `/api/finance/v1/sales-reports/detailed` | Детализация за произвольный период |
-
-### Эквайринг (издержки приёма платежей)
-
-| Метод | Путь | Назначение | Ограничения |
-|---|---|---|---|
-| POST | `/api/finance/v1/acquiring/list` | Список отчётов эквайринга | только Россия |
-| POST | `/api/finance/v1/acquiring/detailed/{reportId}` | Детализация эквайринга по ID | — |
-| POST | `/api/finance/v1/acquiring/detailed` | Детализация эквайринга за период | — |
+> **Примечание (факты вне авто-таблицы, сохранено из прежнего справочника):**
+> - `sales-reports/list` возвращает список отчётов (тип `daily` / `weekly` задаётся телом),
+>   `sales-reports/detailed/{reportId}` — детализация по ID (основной способ),
+>   `sales-reports/detailed` — за произвольный период. Подробно — в разделах ниже.
+> - Эквайринг (`acquiring/*`) — **только по операциям в России**.
+> - Спека `13-finances` также содержит документы (`/api/v1/documents/*`) — они вынесены в
+>   `20-documents.md` (хост `documents-api.wildberries.ru`), сюда не попадают по фильтру.
+> - Лимит на всё семейство — **1 запрос/мин** (всплеск 1). Параметры тел, поля ответов (~80 полей),
+>   BigInt для ежедневных `reportId`, пагинация по `rrdId` (стоп — `204`) — в разделах ниже.
 
 ## Типы отчётов реализации
 

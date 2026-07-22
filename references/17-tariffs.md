@@ -25,13 +25,24 @@
 
 ## Эндпоинты
 
-| Метод | Путь | Назначение | Лимит |
-|---|---|---|---|
-| GET | /api/v2/tariffs/commission | Комиссии по категориям | 1/мин |
-| GET | /api/v2/tariffs/warehouse-coefficients | Коэффициенты складов | 60/мин |
-| GET | /api/v2/tariffs/box | Тариф на коробки | 60/мин |
-| GET | /api/v2/tariffs/pallet | Тариф на паллеты | 60/мин |
-| GET | /api/v2/tariffs/return | Тариф на возвраты | 60/мин |
+<!-- AUTO:BEGIN spec=10-rates section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/tariffs/v1/acceptance/coefficients` | Тарифы на поставку |
+| GET | `/api/v1/tariffs/box` | Тарифы для коробов |
+| GET | `/api/v1/tariffs/commission` | Комиссия по категориям товаров |
+| GET | `/api/v1/tariffs/pallet` | Тарифы для монопаллет |
+| GET | `/api/v1/tariffs/return` | Тарифы на возврат |
+<!-- AUTO:END -->
+
+> **Примечание (факты вне авто-таблицы, сохранено из прежнего справочника):**
+> - Актуальный префикс путей — `/api/v1/tariffs/*` и `/api/tariffs/v1/acceptance/coefficients`
+>   (по спеке, снапшот 2026-07-22). Прежний справочник описывал их как `/api/v2/tariffs/*`, а
+>   коэффициенты складов — как `/api/v2/tariffs/warehouse-coefficients`; актуальный аналог —
+>   `/api/tariffs/v1/acceptance/coefficients` (тарифы на поставку/приёмку).
+> - Лимиты по эндпоинтам: `tariffs/commission` — **1 запр/мин**, остальные (`box`, `pallet`,
+>   `return`, коэффициенты) — 60 запр/мин (см. раздел «Rate limits» выше; по вторичному источнику
+>   лимит коэффициентов приёмки мог быть снижен до 6 запр/мин с 27.06.2026 — проверь вживую).
 
 ## Пример: получить комиссии
 

@@ -20,26 +20,36 @@
 
 ## Эндпоинты
 
-### Отзывы
+<!-- AUTO:BEGIN spec=09-communications section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/v1/new-feedbacks-questions` | Непросмотренные отзывы и вопросы |
+| GET | `/api/v1/question` | Получить вопрос по ID |
+| GET | `/api/v1/questions` | Список вопросов |
+| PATCH | `/api/v1/questions` | Работа с вопросами |
+| GET | `/api/v1/questions/count` | Количество вопросов |
+| GET | `/api/v1/questions/count-unanswered` | Неотвеченные вопросы |
+<!-- AUTO:END -->
+
+**Примечание:** авто-таблица выше — из спеки `09-communications`, которая покрывает только
+**вопросы** (`/api/v1/question*`) и общий счётчик новых (`new-feedbacks-questions`). Эндпоинты
+**отзывов** (`/api/v1/feedbacks/*`) в спеку НЕ входят и сохранены ниже вручную из прежнего
+справочника (проверь вживую — пути и структура ответа могли измениться, см. предупреждение вверху файла).
+
+Прежний справочник описывал ответ на вопрос как `POST /api/v1/questions/{id}/answer`; в спеке —
+`PATCH /api/v1/questions` (ID вопроса и текст ответа передаются **в теле**). Параметры списка
+вопросов (`GET /api/v1/questions`): `isAnswered`, `nmId`, `dateFrom`, `dateTo`, `limit`, `offset`.
+
+### Отзывы (вне спеки — ручной справочник)
 
 | Метод | Путь | Назначение | Параметры |
 |---|---|---|---|
-| GET | /api/v1/new-feedbacks-questions | Проверить наличие новых | — |
 | GET | /api/v1/feedbacks/count | Количество отзывов | hasFoto |
 | GET | /api/v1/feedbacks/count-unanswered | Неотвеченные отзывы | — |
 | GET | /api/v1/feedbacks | Список отзывов | isAnswered, nmId, dateFrom, dateTo, limit, offset |
 | POST | /api/v1/feedbacks/{id}/answer | Ответить на отзыв | feedbackId, text |
-| PATCH | /api/v1/feedbacks/{id}/answer | Редактировать ответ | feedbackId, text (макс 60 дней) |
-| POST | /api/v1/feedbacks/order/return | Запросить возврат | feedbackId |
-
-### Вопросы
-
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /api/v1/questions/count | Количество вопросов | — |
-| GET | /api/v1/questions/count-unanswered | Неотвеченные вопросы | — |
-| GET | /api/v1/questions | Список вопросов | isAnswered, nmId, dateFrom, dateTo, limit, offset |
-| POST | /api/v1/questions/{id}/answer | Ответить на вопрос | questionId, text |
+| PATCH | /api/v1/feedbacks/{id}/answer | Редактировать ответ (макс 60 дней) | feedbackId, text |
+| POST | /api/v1/feedbacks/order/return | Запросить возврат по отзыву | feedbackId |
 
 ## Пример: получить неотвеченные отзывы
 

@@ -19,65 +19,98 @@ NM-отчёты по товарам, **воронка продаж** (заказ
 
 ## Эндпоинты
 
-### Воронка продаж
+Эндпоинты аналитики приходят из ДВУХ официальных спек на хосте `seller-analytics-api.wildberries.ru`:
+`11-analytics` (воронка, NM-отчёты, рейтинг, отчёты по остаткам и поиску) и `12-reports` (платное
+хранение, приёмка, доля бренда, возвраты, удержания, штрафы, маркировка, самовыкупы).
 
-| Метод | Путь | Назначение | Тело запроса | Тип |
-|---|---|---|---|---|
-| **POST** | **/api/analytics/v3/sales-funnel/products** | **Воронка по товарам (АКТУАЛЬНАЯ)** | JSON: selectedPeriod, nmIds, limit, offset, orderBy | синхронный |
-| POST | /api/analytics/v3/sales-funnel/products/history | Поденная/понедельная динамика | JSON | синхронный |
-| POST | /api/analytics/v3/sales-funnel/grouped/history | Динамика, сгруппировано по subject/brand/tag | JSON | синхронный |
-| ~~GET~~ | ~~/api/v2/sales-funnel/products~~ | **Отключён 09.12.2025** | — | — |
-| ~~GET~~ | ~~/api/v3/sales-funnel/products~~ | **Старый путь до миграции — заменён на `/api/analytics/v3/...`** | — | — |
+### Аналитика: воронка, NM-отчёты, остатки, поиск (спека 11-analytics)
 
-**Что изменилось в актуальной v3:**
+<!-- AUTO:BEGIN spec=11-analytics section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| POST | `/api/analytics/v1/item-rating` | Получить отчёт ⚠️ deprecated |
+| POST | `/api/analytics/v1/stocks-report/wb-warehouses` | Остатки на складах WB |
+| POST | `/api/analytics/v2/item-rating` | Получить отчёт |
+| POST | `/api/analytics/v3/sales-funnel/grouped/history` | Статистика групп карточек товаров по дням |
+| POST | `/api/analytics/v3/sales-funnel/products` | Статистика карточек товаров за период |
+| POST | `/api/analytics/v3/sales-funnel/products/history` | Статистика карточек товаров по дням |
+| GET | `/api/v2/nm-report/downloads` | Получить список отчётов |
+| POST | `/api/v2/nm-report/downloads` | Создать отчёт |
+| GET | `/api/v2/nm-report/downloads/file/{downloadId}` | Получить отчёт |
+| POST | `/api/v2/nm-report/downloads/retry` | Сгенерировать отчёт повторно |
+| POST | `/api/v2/search-report/product/orders` | Заказы и позиции по поисковым запросам товара |
+| POST | `/api/v2/search-report/product/search-texts` | Поисковые запросы по товару |
+| POST | `/api/v2/search-report/report` | Основная страница |
+| POST | `/api/v2/search-report/table/details` | Пагинация по товарам в группе |
+| POST | `/api/v2/search-report/table/groups` | Пагинация по группам |
+| POST | `/api/v2/stocks-report/offices` | Данные по складам |
+| POST | `/api/v2/stocks-report/products/groups` | Данные по группам |
+| POST | `/api/v2/stocks-report/products/products` | Данные по товарам |
+| POST | `/api/v2/stocks-report/products/sizes` | Данные по размерам |
+<!-- AUTO:END -->
+
+### Отчёты: хранение, приёмка, доля бренда, возвраты, удержания, штрафы (спека 12-reports)
+
+<!-- AUTO:BEGIN spec=12-reports section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/analytics/v1/deductions` | Подмены и неверные вложения |
+| GET | `/api/analytics/v1/measurement-penalties` | Удержания за занижение габаритов упаковки |
+| GET | `/api/analytics/v1/warehouse-measurements` | Замеры склада |
+| GET | `/api/v1/acceptance_report` | Создать отчёт |
+| GET | `/api/v1/acceptance_report/tasks/{task_id}/download` | Получить отчёт |
+| GET | `/api/v1/acceptance_report/tasks/{task_id}/status` | Проверить статус |
+| GET | `/api/v1/analytics/antifraud-details` | Самовыкупы |
+| GET | `/api/v1/analytics/banned-products/blocked` | Получить отчёт |
+| GET | `/api/v1/analytics/banned-products/shadowed` | Скрытые из каталога ⚠️ deprecated |
+| GET | `/api/v1/analytics/brand-share` | Получить отчёт |
+| GET | `/api/v1/analytics/brand-share/brands` | Бренды продавца |
+| GET | `/api/v1/analytics/brand-share/parent-subjects` | Родительские категории бренда |
+| POST | `/api/v1/analytics/excise-report` | Получить отчёт |
+| GET | `/api/v1/analytics/goods-labeling` | Маркировка товара |
+| GET | `/api/v1/analytics/goods-return` | Получить отчёт |
+| GET | `/api/v1/analytics/region-sale` | Получить отчёт |
+| GET | `/api/v1/paid_storage` | Создать отчёт |
+| GET | `/api/v1/paid_storage/tasks/{task_id}/download` | Получить отчёт |
+| GET | `/api/v1/paid_storage/tasks/{task_id}/status` | Проверить статус |
+| GET | `/api/v1/warehouse_remains` | Создать отчёт |
+| GET | `/api/v1/warehouse_remains/tasks/{task_id}/download` | Получить отчёт |
+| GET | `/api/v1/warehouse_remains/tasks/{task_id}/status` | Проверить статус |
+<!-- AUTO:END -->
+
+> **Примечание — фактура прежнего справочника вне авто-колонок (тела запросов, тип sync/async, отключённые методы):**
+>
+> **Воронка продаж:**
+> - **`POST /api/analytics/v3/sales-funnel/products`** — **АКТУАЛЬНАЯ** воронка по товарам,
+>   **синхронный**, тело JSON `{selectedPeriod, nmIds, limit, offset, orderBy, ...}` (подробно —
+>   раздел «Воронка продаж — подробно» ниже).
+> - `POST /api/analytics/v3/sales-funnel/products/history` и `.../grouped/history` —
+>   поденная/понедельная динамика (синхронные; grouped — по subject/brand/tag).
+> - ⚠️ Отключённые пути: `GET /api/v2/sales-funnel/products` — **отключён 09.12.2025**;
+>   `GET /api/v3/sales-funnel/products` — старый путь до миграции, **заменён** на `/api/analytics/v3/...`.
+>
+> **NM-отчёты:** `POST /api/v2/nm-report/downloads` — **асинхронный** (создать отчёт), список/статус
+> и скачивание — `GET /api/v2/nm-report/downloads` и `GET /api/v2/nm-report/downloads/file/{downloadId}`,
+> повтор — `POST /api/v2/nm-report/downloads/retry`. Прежний синхронный `GET /api/v1/nm-report/detail`
+> в спеке отсутствует — проверь вживую.
+>
+> **Асинхронные отчёты** (создать → статус → скачать по `task_id`, workflow — см. `04-async-tasks.md`):
+> платное хранение (`/api/v1/paid_storage`), приёмка (`/api/v1/acceptance_report`), остатки на складах
+> (`/api/v1/warehouse_remains`), доля бренда, самовыкупы. Готовый отчёт хранения живёт 2 часа,
+> данные — за последние 90 дней; формат — CSV в ZIP.
+>
+> **Доля бренда:** в спеке — `GET /api/v1/analytics/brand-share` (+ `/brands`, `/parent-subjects`).
+> Прежний справочник указывал **асинхронный** `POST /api/v2/brands/report-downloads` — **заменён** на brand-share.
+>
+> **Прочее:** возвраты товаров — `GET /api/v1/analytics/goods-return`; акцизы —
+> `POST /api/v1/analytics/excise-report` (прежде указывался как `GET /api/v1/analytics/excise`).
+
+**Что изменилось в актуальной воронке v3:**
 - Префикс пути: `/api/v3/...` → `/api/analytics/v3/...`
 - Метод: GET → **POST**, параметры переехали в JSON-body
 - Период задаётся объектом `selectedPeriod {start, end}` (не плоскими `dateFrom/dateTo`)
 - Пагинация — **offset/limit** (`limit` до 1000, дефолт 50; `offset` сдвигает страницу)
 - Ошибки больше не приходят в теле успешного ответа — проверять HTTP-статус
-
-### NM-отчёты (аналитика товаров)
-
-| Метод | Путь | Назначение | Параметры | Тип |
-|---|---|---|---|---|
-| GET | /api/v1/nm-report/detail | Детальный отчёт по товарам | nmID, period | синхронный |
-| POST | /api/v2/nm-report/downloads | Создать отчёт NM за период | dateFrom, dateTo, fields | **асинхронный** |
-| GET | /api/v2/nm-report/downloads | Список созданных отчётов | — | — |
-| GET | /api/v2/nm-report/downloads/{taskId} | Статус отчёта | taskId | — |
-| GET | /api/v2/nm-report/downloads/{taskId}/file | Скачать отчёт | taskId | — |
-
-### Платное хранение (АСИНХРОННЫЙ)
-
-| Метод | Путь | Назначение | Параметры | Тип |
-|---|---|---|---|---|
-| POST | /api/v1/paid_storage | **Создать отчёт хранения** | dateFrom, dateTo | **асинхронный** |
-| GET | /api/v1/paid_storage/tasks/{taskId}/status | Статус отчёта | taskId | — |
-| GET | /api/v1/paid_storage/tasks/{taskId}/download | Скачать отчёт (CSV в ZIP) | taskId | — |
-
-Подробно workflow task_id — см. `04-async-tasks.md`.
-
-### Приёмка (АСИНХРОННЫЙ)
-
-| Метод | Путь | Назначение | Параметры | Тип |
-|---|---|---|---|---|
-| POST | /api/v1/acceptance_report | Создать отчёт приёмки | dateFrom, dateTo | **асинхронный** |
-| GET | /api/v1/acceptance_report/tasks/{taskId}/status | Статус | taskId | — |
-| GET | /api/v1/acceptance_report/tasks/{taskId}/download | Скачать | taskId | — |
-
-### Доля бренда (АСИНХРОННЫЙ)
-
-| Метод | Путь | Назначение | Параметры | Тип |
-|---|---|---|---|---|
-| POST | /api/v2/brands/report-downloads | Создать отчёт по бренду | dateFrom, dateTo | **асинхронный** |
-| GET | /api/v2/brands/report-downloads/{taskId} | Статус | taskId | — |
-| GET | /api/v2/brands/report-downloads/{taskId}/file | Скачать | taskId | — |
-
-### Прочее
-
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /api/v1/analytics/goods-return | Возвраты товаров | dateFrom, dateTo |
-| GET | /api/v1/analytics/excise | Отчёт по акцизам | nmID |
 
 ---
 

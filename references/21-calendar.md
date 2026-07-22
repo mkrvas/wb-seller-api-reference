@@ -20,11 +20,21 @@
 
 ## Эндпоинты
 
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /api/v1/calendar | Календарь всех акций | — |
-| GET | /api/v1/calendar/{id} | Детали акции | eventId |
-| POST | /api/v1/calendar/{id}/actions | Добавить товары в акцию | eventId, товары |
+<!-- AUTO:BEGIN spec=08-promotion section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/v1/calendar/promotions` | Список акций |
+| GET | `/api/v1/calendar/promotions/details` | Детальная информация об акциях |
+| GET | `/api/v1/calendar/promotions/nomenclatures` | Список товаров для участия в акции |
+| POST | `/api/v1/calendar/promotions/upload` | Добавить товар в акцию |
+<!-- AUTO:END -->
+
+> **Примечание (сохранено из прежнего справочника):**
+> - Спека (снапшот 2026-07-22) подтвердила: актуальные пути — под префиксом
+>   `/api/v1/calendar/promotions/*` (список акций, детали, номенклатуры для участия, добавление
+>   товара). Прежний справочник описывал плоские `GET /api/v1/calendar`, `GET /api/v1/calendar/{id}`,
+>   `POST /api/v1/calendar/{id}/actions` — они **заменены** новыми путями выше, не использовать.
+> - Хост — `dp-calendar-api.wildberries.ru`, версия `/api/v1/`, лимит 10 запр / 6 сек (~100/мин).
 
 ## Пример
 

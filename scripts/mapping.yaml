@@ -1,32 +1,63 @@
 # Единый конфиг конвейера: откуда качать спеки и в какие файлы справочника
 # раскладывать их эндпоинты. include/exclude_prefixes — фильтры по префиксу пути.
+# Финализировано по фактическому содержимому спек (снапшот 2026-07-22): у спек servers=[],
+# поэтому файлы сопоставлены по префиксам путей и хосту из шапки md-файла.
 base_url: "https://dev.wildberries.ru/api/swagger/yaml/ru/{name}.yaml?region=ru"
 specs:
+  # Общие эндпоинты (ping, seller-info, news, users, invite, rating, subscriptions).
+  # Отдельного файла-семейства нет; 00-overview.md — инфраструктурный (хосты/авторизация/scopes),
+  # таблиц эндпоинтов не содержит. Маркер не вставлен → запись инертна (home под «Общее» — отдельно).
   - name: 01-general
     files: [{path: references/00-overview.md}]
+  # Content: карточки, справочники, теги, категории. Цен/скидок в спеке НЕТ.
   - name: 02-items
     files: [{path: references/10-content.md}]
+  # FBS: заказы, поставки, пропуска (marketplace-api, /api/v3/ и /api/marketplace/v3/).
+  # Склады продавца (/api/v3/warehouses) и остатки продавца (/api/v3/stocks) в спеке ОТСУТСТВУЮТ —
+  # остаются ручными таблицами в 11-marketplace.md.
   - name: 03-orders-fbs
     files: [{path: references/11-marketplace.md}]
+  # Новые семейства заказов — файлы создаёт Task 5. Маркеров пока нет → записи инертны.
   - name: 04-orders-dbw
     files: [{path: references/22-orders-dbw.md}]
   - name: 05-orders-dbs
     files: [{path: references/23-orders-dbs.md}]
   - name: 06-in-store-pickup
     files: [{path: references/24-in-store-pickup.md}]
+  # Поставки FBW (/api/v1/ supplies/warehouses/acceptance, supplies-api) — ОТДЕЛЬНОЕ семейство,
+  # не FBS (другой хост и версия). В 11-marketplace не помещается. Инертна до создания своего файла.
   - name: 07-orders-fbw
-    files: [{path: references/11-marketplace.md}]
+    files: [{path: references/26-supplies-fbw.md}]
+  # Promotion: реклама (/adv/*, /api/advert/*) + календарь акций (/api/v1/calendar/*).
+  # Одна спека кормит два файла — сплит по префиксу /api/v1/calendar (без пересечений/потерь).
   - name: 08-promotion
-    files: [{path: references/15-advertising.md}]
+    files:
+      - {path: references/15-advertising.md, exclude_prefixes: ["/api/v1/calendar"]}
+      - {path: references/21-calendar.md, include_prefixes: ["/api/v1/calendar"]}
+  # Коммуникации: в спеке ТОЛЬКО вопросы (/api/v1/question*, new-feedbacks-questions).
+  # Отзывы (/api/v1/feedbacks*) и чат (buyer-chat) в спеке ОТСУТСТВУЮТ —
+  # отзывы остаются ручными в 16-feedbacks.md, а 18-chat.md — полностью ручной.
   - name: 09-communications
     files: [{path: references/16-feedbacks.md}]
+  # Тарифы: /api/v1/tariffs/* и /api/tariffs/v1/acceptance/coefficients (версия v1, не v2).
   - name: 10-rates
     files: [{path: references/17-tariffs.md}]
+  # Аналитика: воронка, NM-отчёты, item-rating, stocks-report, search-report (seller-analytics-api).
   - name: 11-analytics
     files: [{path: references/13-analytics.md}]
+  # Отчёты пересекают ДВА хоста: seller-analytics-api (paid_storage, acceptance, brand-share,
+  # goods-return, warehouse_remains, удержания/штрафы/…) и statistics-api (/api/v1/supplier/*).
+  # Сплит: supplier/* → 12-statistics.md, всё остальное → 13-analytics.md (без пересечений/потерь).
   - name: 12-reports
-    files: [{path: references/12-statistics.md}]
+    files:
+      - {path: references/13-analytics.md, exclude_prefixes: ["/api/v1/supplier/"]}
+      - {path: references/12-statistics.md, include_prefixes: ["/api/v1/supplier/"]}
+  # Финансы (/api/finance/v1/*, /api/v1/account/balance) + документы (/api/v1/documents/*).
+  # Сплит по префиксу /api/v1/documents (без пересечений/потерь).
   - name: 13-finances
-    files: [{path: references/12a-finance.md}]
+    files:
+      - {path: references/12a-finance.md, exclude_prefixes: ["/api/v1/documents/"]}
+      - {path: references/20-documents.md, include_prefixes: ["/api/v1/documents/"]}
+  # WBD (WB Доставка) — файл создаёт Task 5. Запись инертна.
   - name: 14-wbd
     files: [{path: references/25-wbd.md}]
