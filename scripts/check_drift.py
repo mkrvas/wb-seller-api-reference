@@ -19,7 +19,11 @@ def head_version(repo_path):
 def rows_dict(spec_text):
     if not spec_text:
         return {}
-    return {(m, p): (s, d) for m, p, s, d in extract_rows(yaml.safe_load(spec_text))}
+    try:
+        spec = yaml.safe_load(spec_text)
+    except yaml.YAMLError:
+        return None
+    return {(m, p): (s, d) for m, p, s, d in extract_rows(spec)}
 
 
 def diff_rows(old, new):
@@ -31,6 +35,10 @@ def diff_rows(old, new):
 
 
 def main():
+    if not Path("specs").is_dir():
+        print("ОШИБКА: папка specs/ не найдена — сначала запусти fetch_specs.py",
+              file=sys.stderr)
+        sys.exit(1)
     mapping = yaml.safe_load(Path("scripts/mapping.yaml").read_text(encoding="utf-8"))
     out = ["## Обновление официальных спек WB", ""]
     for s in mapping["specs"]:
@@ -40,6 +48,11 @@ def main():
             continue
         old = rows_dict(head_version(f"specs/{name}.yaml"))
         new = rows_dict(new_file.read_text(encoding="utf-8"))
+        if old is None or new is None:
+            out.append(f"### {name}")
+            out.append("⚠️ Спека не распарсилась — сравнение пропущено, проверь файл руками.")
+            out.append("")
+            continue
         if old == new:
             continue
         out.append(f"### {name}")
