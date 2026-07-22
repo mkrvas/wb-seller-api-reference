@@ -78,8 +78,10 @@ def _rule_for(mapping, spec_name, md_rel_path):
 def process_file(md_file, mapping, specs_dir):
     with md_file.open(encoding="utf-8", newline="") as f:
         text = f.read()
-    posix = md_file.as_posix()
-    rel = posix[posix.index("references/"):]
+    # по схеме mapping.yaml все пути файлов — "references/<имя>", поэтому
+    # собираем rel из имени файла, не выковыривая подстроку из полного пути
+    rel = f"references/{md_file.name}"
+    has_crlf = "\r\n" in text
 
     def repl(m):
         spec_name = m.group("spec")
@@ -89,9 +91,16 @@ def process_file(md_file, mapping, specs_dir):
                   file=sys.stderr)
             return m.group(0)
         spec_path = Path(specs_dir) / f"{spec_name}.yaml"
+        if not spec_path.exists():
+            print(f"ВНИМАНИЕ: {rel}: спека {spec_path} не найдена, зона не тронута",
+                  file=sys.stderr)
+            return m.group(0)
         spec = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
         rows = apply_filters(extract_rows(spec), rule)
-        return m.group("begin") + render_table(rows) + m.group("end")
+        rendered = render_table(rows)
+        if has_crlf:
+            rendered = rendered.replace("\n", "\r\n")
+        return m.group("begin") + rendered + m.group("end")
 
     new = MARKER_RE.sub(repl, text)
     if new != text:
