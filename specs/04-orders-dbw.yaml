@@ -1,0 +1,715 @@
+openapi: 3.0.1
+info:
+  title: Заказы DBW
+  version: ordersdbw
+  description: |
+    <div class="api-block">
+
+    С помощью методов Заказы DBW (Доставка курьером WB) вы можете:
+      - получать информацию о [сборочных заданиях](/openapi/orders-dbw#tag/dbwAssemblyOrders), управлять статусами и отменять сборочные задания
+      - получать, добавлять, редактировать и удалять [метаданные](/openapi/orders-dbw#tag/dbwLabelIdentifiers) сборочных заданий
+
+    </div>
+
+    <div class="description_ref">
+      Узнать, как использовать методы в бизнес-кейсах, можно в <a href="/knowledge-base/articles/019d49a4-036a-7721-98e8-bed5f1a4f72d/zakazy-dbw">инструкции</a> по работе с <strong>заказами DBW</strong>
+    </div>
+  x-file-name: orders-dbw
+security:
+  - HeaderApiKey: []
+tags:
+  - name: Сборочные задания DBW
+    x-displayName: Сборочные задания DBW
+    description: ''
+  - name: Идентификаторы маркировки DBW
+    x-displayName: Идентификаторы маркировки DBW
+    description: ''
+paths:
+  /api/v3/dbw/orders/new:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      operationId: getV3DbwOrdersNew
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - Сборочные задания DBW
+      summary: Получить список новых сборочных заданий
+      description: |
+        Метод возвращает список всех новых [сборочных заданий](/openapi/orders-dbw#tag/dbwAssemblyOrders), которые есть у продавца на момент запроса.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: false
+                properties:
+                  orders:
+                    type: array
+                    nullable: false
+                    description: Список новых сборочных заданий
+                    items:
+                      $ref: '#/components/schemas/OrderNewDBW'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/dbw/orders:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    get:
+      operationId: getV3DbwOrders
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - Сборочные задания DBW
+      summary: Получить информацию о завершенных сборочных заданиях
+      description: |
+        Метод возвращает информацию о завершенных [сборочных заданиях](/openapi/orders-dbw#tag/dbwAssemblyOrders).
+        <br><br>
+        Можно получить данные за заданный период, максимум 30 календарных дней одним запросом.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Next'
+        - name: dateFrom
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: |
+            Дата начала периода в формате Unix timestamp
+        - name: dateTo
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Дата конца периода в формате Unix timestamp
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                nullable: false
+                properties:
+                  next:
+                    $ref: '#/components/schemas/Next'
+                  orders:
+                    type: array
+                    nullable: false
+                    items:
+                      $ref: '#/components/schemas/Order'
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/dbw/orders/delivery-date:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      operationId: postV3DbwOrdersDeliveryDate
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      summary: Получить дату и время доставки
+      tags:
+        - Сборочные задания DBW
+      description: |
+        Метод возвращает информацию о выбранных покупателем дате и времени доставки сборочных заданий.
+        <br>
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeliveryDatesRequest'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryDatesInfoResp'
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest1'
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/marketplace/v3/dbw/orders/client:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      operationId: postV3DbwOrdersClient
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      summary: Информация о покупателе
+      tags:
+        - Сборочные задания DBW
+      description: |
+        Метод возвращает информацию о покупателях по ID сборочных заданий.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdersRequestAPI'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientInfoResp'
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Error'
+                  - $ref: '#/components/schemas/api.BatchError'
+              examples:
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest1'
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                UploadDataLimit:
+                  $ref: '#/components/examples/UploadDataLimit'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/dbw/orders/status:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      operationId: postV3DbwOrdersStatus
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - Сборочные задания DBW
+      summary: Получить статусы сборочных заданий
+      description: |
+        Метод возвращает статусы сборочных заданий по их ID.
+        <br><br>
+        `supplierStatus` — статус сборочного задания.
+        Триггер его изменения — действие самого продавца.
+
+        Возможные значения `supplierStatus`:
+        | Статус   | Описание            | Как перевести сборочное задание в данный статус |
+        | -------  | ---------           | --------------------------------------|
+        | `new`      | **Новое сборочное задание** | |
+        | `confirm`  | **На сборке**      |  [Перевести сборочное задание на сборку](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/patchV3DbwOrdersOrderIdConfirm)
+        | `complete` | **В доставке**  | [Перевести сборочное задание в доставку](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/postV3DbwOrdersStatusDeliver) |
+        | `receive`  | **Получено покупателем**|  Переводится курьером
+        | `reject`   | **Отказ покупателя при получении**| Переводится курьером
+        | `cancel`   | **Отменено продавцом**   |  [Отменить сборочное задание](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/patchV3DbwOrdersOrderIdCancel)
+        | `cancel_missed_call` | **Отмена по причине недозвона**<br> | Статус меняется автоматически |
+
+        <br><br>
+        `wbStatus` — статус системы Wildberries.
+
+        Возможные значения `wbStatus`:
+        - `waiting` — сборочное задание в работе
+        - `sold` — заказ получен покупателем
+        - `canceled` — отмена сборочного задания
+        - `canceled_by_client` — покупатель отменил заказ при получении
+        - `declined_by_client` — покупатель отменил заказ в первый чаc
+        <br>
+        Отмена доступна покупателю в первый час с момента заказа, если заказ не переведен на сборку
+        - `defect` — отмена заказа по причине брака
+        - `canceled_by_missed_call` — отмена заказа по причине недозвона
+        - `postponed_delivery` — курьерская доставка отложена
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - orders
+              properties:
+                orders:
+                  type: array
+                  minItems: 1
+                  maxItems: 1000
+                  description: Список ID сборочных заданий
+                  items:
+                    type: integer
+                    format: int64
+                    example: 5632423
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    nullable: false
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          format: int64
+                          nullable: false
+                          description: ID сборочного задания
+                          example: 5632423
+                        supplierStatus:
+                          type: string
+                          nullable: false
+                          description: Статус сборочного задания, установленный продавцом
+                          example: new
+                        wbStatus:
+                          type: string
+                          nullable: false
+                          description: Статус сборочного задания в системе Wildberries
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/dbw/orders/{orderId}/confirm:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    patch:
+      operationId: patchV3DbwOrdersOrderIdConfirm
+      x-readonly-method: false
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - Сборочные задания DBW
+      summary: Перевести на сборку
+      description: |
+        Метод переводит [сборочное задание](/openapi/orders-dbw#tag/dbwAssemblyOrders) в [статус](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/postV3DbwOrdersStatus) `confirm` — на сборке.
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      parameters:
+        - $ref: '#/components/parameters/Order'
+      responses:
+        '204':
+          description: Подтверждено
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Ошибка обновления статуса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                StatusMismatch:
+                  $ref: '#/components/examples/StatusMismatch'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/dbw/orders/stickers:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      operationId: postV3DbwOrdersStickers
+      x-readonly-method: true
+      x-category: marketplace
+      security:
+        - HeaderApiKey: []
+      tags:
+        - Сборочные задания DBW
+      summary: Получить стикеры сборочных заданий
+      description: |
+        Метод возвращает список стикеров для [сборочных заданий](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/getV3DbwOrdersNew) в [статусах](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/postV3DbwOrdersStatus):
+          - `confirm` — на сборке
+          - `complete` — в доставке
+
+        За один запрос можно получить максимум 100 стикеров.<br>
+
+        Доступные форматы стикеров:
+          - SVG
+          - ZPLV (вертикальный)
+          - ZPLH (горизонтальный)
+          - PNG
+
+        Доступны размеры:
+          - 580x400 px при `width=58&height=40` в запросе
+          - 400x300 px при `width=40&height=30` в запросе
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: Тип стикера
+          schema:
+            type: string
+            enum:
+              - svg
+              - zplv
+              - zplh
+              - png
+        - name: width
+          in: query
+          required: true
+          description: Ширина стикера
+          schema:
+            type: integer
+            enum:
+              - 58
+              - 40
+        - name: height
+          in: query
+          required: true
+          description: Высота стикера
+          schema:
+            type: integer
+            enum:
+              - 40
+              - 30
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  minItems: 1
+                  maxItems: 100
+                  description: Список ID сборочных заданий
+                  items:
+                    type: integer
+                    format: int64
+                    example: 5346346
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stickers:
+                    type: array
+                    nullable: false
+                    items:
+                      type: object
+                      properties:
+                        orderId:
+                          type: integer
+                          format: int64
+                          nullable: false
+                          description: ID сборочного задания
+                          example: 5346346
+                        partA:
+                          type: string
+                          nullable: false
+                          description: Первая часть ID стикера для печати подписи
+                          example: '231648'
+                        partB:
+                          type: string
+                          nullable: false
+                          description: Вторая часть ID стикера для печати подписи
+                          example: '97523'
+                        barcode:
+                          type: string
+                          nullable: false
+                          description: Закодированное значение стикера
+                          example: '!uKEtQZVx'
+                        file:
+                          type: string
+                          nullable: false
+                          description: Полное представление стикера в заданном формате (кодировка base64)
+                          example: PD94bWwgdmVyc2lvbj0iMS4wIj8+CjwhLS0gR2VuZXJhdGVkIGJ5IFNWR28gLS0+Cjxzdmcgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiCiAgICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICAgIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjQwMCIgaGVpZQiIGhlaWdodD0iMTcwIiBzdHlsZT0iZmlsbDpibGFjayIgLz4KPHJlY3QgeD0iMzE4IiB5PSIyMCIgd2lkdGg9IjYiIGhlaWdodD0iMTcwIiBzdHlsZT0iZmlsbDpibGFjayIgLz4KPHJlY3QgeD0iMzI2IiB5PSIyMCIgd2lkdGg9IjIiIGhlaWdodD0iMTcwIiBzdHlsZT0iZmlsbDpibGFjayIgLz4KPHJlY3QgeD0iMzMwIiB5PSIyMCIgd2lkdGg9IjQiIGhlaWdodD0iMTcwIiBzdHlsZT0iZmlsbDpibGFjayIgLz4KPHJlY3QgeD0iMjAiIHk9IjIwMCIgd2lkdGg9IjM1MCIgaGVpZ2h0PSI5MCIgc3R5bGU9ImZpbGw6YmxhY2siIC8+Cjx0ZXh0IHg9IjMwIiB5PSIyNDAiIHN0eWxlPSJmaWxsOndoaXRlO2ZvbnQtc2l6ZTozMHB0O3RleHQtYW5jaG9yOnN0YXJ0IiA+MjMxNjQ4PC90ZXh0Pgo8dGV4dCB4PSIzNTAiIHk9IjI3MCIgc3R5bGU9ImZpbGw6d2hpdGU7Zm9udC1zaXplOjUwcHQ7dGV4dC1hbmNob3I6ZW5kIiA+OTc1MzwvdGV4dD4KPC9zdmc+Cg==
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/marketplace/v3/dbw/orders/status/deliver:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      operationId: postV3DbwOrdersStatusDeliver
+      x-readonly-method: false
+      x-category: marketplace
+      tags:
+        - Сборочные задания DBW
+      summary: Перевести сборочные задания в доставку
+      description: |
+        Метод переводит [сборочные задания](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/getV3DbwOrders) из [статуса](/openapi/orders-dbw#tag/dbwAssemblyOrders/operation/postV3DbwOrdersStatus) `confirm` в статус `complete` — в доставке.
+
+        <div class="description_important">
+        Проверяйте ответ метода. Сборочные задания, переведённые в доставку, вернутся с признаком `"isError":false`. Для остальных сборочных заданий смотрите причину ошибки в массиве `errors`
+        </div>
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца для следующих методов DBW:
+        <ul>
+            <li>получение и обновление списка контактов</li>
+            <li>получение и удаление идентификаторов маркировки</li>
+            <li>методы сборочных заданий</li>
+        </ul> 
+
+        | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- |
+        | 1 мин | 300 запросов | 200 мс | 20 запросов |
+
+        Один запрос с кодами ответов <code>4XX</code> учитывается как 10 запросов
+        </div>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/api.OrdersRequestV2'
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/api.StatusSetResponses'
+              example:
+                requestId: 03615778-eb9e-4f55-b4Of-fd3ac0fad2сc
+                results:
+                  - orderId: 42131238
+                    isError: true
+                    errors:
+                      - code: 409
+                        detail: MetaValidationFail
+                        metaDetails:
+                          - key: sgtin
+                            value: '1234567890123'
+                            decision: sgtinInvalidFormat
+                  - orderId: 4279781545
+                    isError: false
+        '400':
+          description: Неправильный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                IncorrectParameter:
+                  $ref: '#/components/examples/IncorrectParameter'
+                IncorrectRequestBody:
+                  $ref: '#/components/examples/IncorrectRequestBody'
+                IncorrectRequest:
+                  $ref: '#/components/examples/IncorrectRequest'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '429':
+          $ref: '#/components/responses/429'
+  /api/v3/dbw/orders/courier:
+    servers:
+      - url: https://marketplace-api.wildberries.ru
+    post:
+      operationId: postV3DbwOrdersCourier
+      x-readonly-method: true
+      x-category: marketplace
+      tags:
+        - Сборочные задания DBW
+      summary: Информация о курьере
+      description: |
+        Метод возвращает контактные данные и номер автомобиля курьера по ID сборочного задания. <br> Для сборочных заданий в статусах `confirm`, `complete`.
+
+        <div class="de
