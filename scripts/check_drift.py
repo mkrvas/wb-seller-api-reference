@@ -35,6 +35,9 @@ def diff_rows(old, new):
 
 
 def main():
+    # защита от cp1251-консоли Windows: без этого print() кириллицы/эмодзи может упасть
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     if not Path("specs").is_dir():
         print("ОШИБКА: папка specs/ не найдена — сначала запусти fetch_specs.py",
               file=sys.stderr)
