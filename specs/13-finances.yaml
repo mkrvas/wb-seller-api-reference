@@ -658,6 +658,58 @@ paths:
           $ref: '#/components/responses/402'
         '429':
           $ref: '#/components/responses/429'
+  /api/v1/documents/download/all:
+    servers:
+      - url: https://documents-api.wildberries.ru
+    post:
+      operationId: postV1DocumentsDownloadAll
+      x-readonly-method: true
+      x-category: documents
+      security:
+        - HeaderApiKey: []
+      tags:
+        - Документы
+      summary: Получить документы
+      description: |
+        Метод загружает несколько документов из [списка документов продавца](/openapi/financial-reports-and-accounting#tag/documents/operation/getV1DocumentsList).
+
+        <div class="description_limit">
+        <a href="/openapi/api-information#tag/introduction/Limity-zaprosov">Лимит запросов</a> на один аккаунт продавца:
+
+
+        | Тип | Период | Лимит | Интервал | Всплеск |
+        | --- | --- | --- | --- | --- |
+        | Персональный | 5 мин | 1 запрос | 5 мин | 5 запросов |
+        | Сервисный | 5 мин | 1 запрос | 5 мин | 5 запросов |
+        | Базовый с секретом | 5 мин | 1 запрос | 5 мин | 5 запросов |
+        | Базовый | 24 ч | 1 запрос | 24 ч | 1 запрос |
+        </div>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestDownload'
+            example:
+              params:
+                - extension: zip
+                  serviceName: redeem-notification-44841941
+                - extension: xlsx
+                  serviceName: act-income-mp-392460936
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDocs'
+        '400':
+          $ref: '#/components/responses/Responses400DownloadAll'
+        '401':
+          $ref: '#/components/responses/401'
+        '402':
+          $ref: '#/components/responses/402'
+        '429':
+          $ref: '#/components/responses/429'
 components:
   parameters:
     LocaleCat:
