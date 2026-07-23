@@ -16,7 +16,7 @@ FBS заказы (сборочные задания), поставки, упра
 |---|---|---|
 | GET | `/api/marketplace/v3/fbs/orders/archive` | Получить список архивных сборочных заданий |
 | POST | `/api/marketplace/v3/orders/meta` | Получить идентификаторы маркировки сборочных заданий |
-| PUT | `/api/marketplace/v3/orders/{orderId}/meta/customs-declaration` | Закрепить за сборочным заданием номер ДТ |
+| PUT | `/api/marketplace/v3/orders/{orderId}/meta/customs-declaration` | Закрепить номер ДТ за сборочным заданием |
 | GET | `/api/marketplace/v3/supplies/{supplyId}/order-ids` | Получить ID сборочных заданий поставки |
 | PATCH | `/api/marketplace/v3/supplies/{supplyId}/orders` | Добавить сборочные задания к поставке |
 | GET | `/api/v3/orders` | Получить информацию о сборочных заданиях |
@@ -29,10 +29,10 @@ FBS заказы (сборочные задания), поставки, упра
 | PATCH | `/api/v3/orders/{orderId}/cancel` | Отменить сборочное задание |
 | DELETE | `/api/v3/orders/{orderId}/meta` | Удалить идентификаторы маркировки сборочного задания |
 | PUT | `/api/v3/orders/{orderId}/meta/expiration` | Закрепить за сборочным заданием срок годности товара |
-| PUT | `/api/v3/orders/{orderId}/meta/gtin` | Закрепить за сборочным заданием GTIN |
-| PUT | `/api/v3/orders/{orderId}/meta/imei` | Закрепить за сборочным заданием IMEI |
-| PUT | `/api/v3/orders/{orderId}/meta/sgtin` | Закрепить за сборочным заданием код маркировки Честного знака |
-| PUT | `/api/v3/orders/{orderId}/meta/uin` | Закрепить за сборочным заданием УИН |
+| PUT | `/api/v3/orders/{orderId}/meta/gtin` | Закрепить GTIN за сборочным заданием |
+| PUT | `/api/v3/orders/{orderId}/meta/imei` | Закрепить IMEI за сборочным заданием |
+| PUT | `/api/v3/orders/{orderId}/meta/sgtin` | Закрепить код маркировки Честного знака за сборочным заданием |
+| PUT | `/api/v3/orders/{orderId}/meta/uin` | Закрепить УИН за сборочным заданием |
 | GET | `/api/v3/passes` | Получить список пропусков |
 | POST | `/api/v3/passes` | Создать пропуск |
 | GET | `/api/v3/passes/offices` | Получить список складов, для которых требуется пропуск |
@@ -60,28 +60,40 @@ FBS заказы (сборочные задания), поставки, упра
 >   См. также блок «Требует ручной проверки» ниже — часть отмеченных там сомнений спека разрешает.
 > - Заказы **DBS** — отдельное семейство (`/api/v3/dbs/*`, будущий `23-orders-dbs.md`), в этой спеке их нет.
 
-> **Склады и остатки продавца (`/api/v3/warehouses`, `/api/v3/stocks`) в спеке `03-orders-fbs`
-> ОТСУТСТВУЮТ** — это отдельная категория API. Таблицы ниже сохранены вручную из прежнего справочника.
+> **Склады, остатки и офисы продавца** (`/api/v3/warehouses`, `/api/v3/stocks`, `/api/v3/offices`)
+> в спеке `03-orders-fbs` ОТСУТСТВУЮТ, но их отдаёт спека `02-items` — авто-таблица ниже. Параметры
+> запросов и пути-«призраки» из прежнего ручного справочника сохранены под зоной.
 
-### Склады продавца
+### Склады и остатки продавца
 
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /api/v3/warehouses | Список складов | — |
-| POST | /api/v3/warehouses | Создать склад | name, address |
-| GET | /api/v3/warehouses/{id} | Детали склада | warehouseId |
-| PATCH | /api/v3/warehouses/{id} | Обновить склад | warehouseId |
-| DELETE | /api/v3/warehouses/{id} | Удалить склад | warehouseId |
+Склады и остатки продавца (из спеки 02-items):
 
-### Остатки продавца (на своих складах)
+<!-- AUTO:BEGIN spec=02-items section=endpoints -->
+| Метод | Путь | Назначение |
+|---|---|---|
+| GET | `/api/v3/offices` | Получить список складов WB |
+| DELETE | `/api/v3/stocks/{warehouseId}` | Удалить остатки товаров |
+| POST | `/api/v3/stocks/{warehouseId}` | Получить остатки товаров |
+| PUT | `/api/v3/stocks/{warehouseId}` | Обновить остатки товаров |
+| GET | `/api/v3/warehouses` | Получить список складов продавца |
+| POST | `/api/v3/warehouses` | Создать склад продавца |
+| DELETE | `/api/v3/warehouses/{warehouseId}` | Удалить склад продавца |
+| PUT | `/api/v3/warehouses/{warehouseId}` | Обновить склад продавца |
+<!-- AUTO:END -->
 
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| POST | /api/v3/stocks | Загрузить остатки | warehouseID, sku, quantity |
-| GET | /api/v3/stocks/{warehouseId} | Остатки на складе | warehouseId, limit, offset |
-| POST | /api/v3/stocks/{warehouseId} | Обновить остатки | warehouseId |
-| PUT | /api/v3/stocks/{warehouseId} | Заменить остатки (полная) | warehouseId |
-| DELETE | /api/v3/stocks/{warehouseId} | Удалить остатки | warehouseId, skus |
+#### Параметры (ручной справочник, сохранено)
+
+Спека 02-items даёт пути и методы; параметры запросов — из прежнего справочника, проверь вживую:
+
+- `POST /api/v3/warehouses` — создать склад: `name`, `address`.
+- `PUT /api/v3/warehouses/{warehouseId}` — обновить склад.
+- `POST | PUT | DELETE /api/v3/stocks/{warehouseId}` — загрузить / заменить (полная) / удалить остатки: `warehouseID`, `sku`, `quantity`, `skus`.
+
+Пути из прежнего ручного справочника, которых в обновлённой спеке `02-items` НЕТ (вероятно устарели
+или были ошибочны — проверь вживую): `GET /api/v3/warehouses/{id}` (детали склада),
+`GET /api/v3/stocks/{warehouseId}` (чтение остатков), `PATCH /api/v3/warehouses/{id}` (обновление —
+в спеке это `PUT`), `POST /api/v3/stocks` без `{warehouseId}`. Спека разрешает соответствующие
+сомнения из блока «Требует ручной проверки» ниже.
 
 **Важно:** Это остатки **продавца** на его собственных FBS-складах. Остатки **на складах WB** — через Statistics API (`/api/v1/supplier/stocks`), см. `12-statistics.md`.
 

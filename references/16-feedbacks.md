@@ -23,6 +23,21 @@
 <!-- AUTO:BEGIN spec=09-communications section=endpoints -->
 | Метод | Путь | Назначение |
 |---|---|---|
+| DELETE | `/api/feedbacks/v1/pins` | Открепить отзывы |
+| GET | `/api/feedbacks/v1/pins` | Список закреплённых и откреплённых отзывов |
+| POST | `/api/feedbacks/v1/pins` | Закрепить отзывы |
+| GET | `/api/feedbacks/v1/pins/count` | Количество закреплённых и откреплённых отзывов |
+| GET | `/api/feedbacks/v1/pins/limits` | Лимиты закреплённых отзывов |
+| PATCH | `/api/v1/claim` | Ответ на заявку покупателя |
+| GET | `/api/v1/claims` | Заявки покупателей на возврат |
+| GET | `/api/v1/feedback` | Получить отзыв по ID |
+| GET | `/api/v1/feedbacks` | Список отзывов |
+| PATCH | `/api/v1/feedbacks/answer` | Отредактировать ответ на отзыв |
+| POST | `/api/v1/feedbacks/answer` | Ответить на отзыв |
+| GET | `/api/v1/feedbacks/archive` | Список архивных отзывов |
+| GET | `/api/v1/feedbacks/count` | Количество отзывов |
+| GET | `/api/v1/feedbacks/count-unanswered` | Необработанные отзывы |
+| POST | `/api/v1/feedbacks/order/return` | Возврат товара по ID отзыва |
 | GET | `/api/v1/new-feedbacks-questions` | Непросмотренные отзывы и вопросы |
 | GET | `/api/v1/question` | Получить вопрос по ID |
 | GET | `/api/v1/questions` | Список вопросов |
@@ -31,25 +46,20 @@
 | GET | `/api/v1/questions/count-unanswered` | Неотвеченные вопросы |
 <!-- AUTO:END -->
 
-**Примечание:** авто-таблица выше — из спеки `09-communications`, которая покрывает только
-**вопросы** (`/api/v1/question*`) и общий счётчик новых (`new-feedbacks-questions`). Эндпоинты
-**отзывов** (`/api/v1/feedbacks/*`) в спеку НЕ входят и сохранены ниже вручную из прежнего
-справочника (проверь вживую — пути и структура ответа могли измениться, см. предупреждение вверху файла).
+**Примечание:** авто-таблица выше — из спеки `09-communications`. Портал отдал полную версию
+(5 → 21 путь), поэтому зона теперь покрывает **вопросы** (`/api/v1/question*`,
+`new-feedbacks-questions`), **отзывы** (`/api/v1/feedback*`, включая закреплённые
+`/api/feedbacks/v1/pins*`) и **заявки покупателей на возврат** (`/api/v1/claim`, `/api/v1/claims`).
+**Чат с покупателями** (`/api/v1/seller/*`) — отдельное семейство, вынесен в `18-chat.md`.
 
-Прежний справочник описывал ответ на вопрос как `POST /api/v1/questions/{id}/answer`; в спеке —
-`PATCH /api/v1/questions` (ID вопроса и текст ответа передаются **в теле**). Параметры списка
-вопросов (`GET /api/v1/questions`): `isAnswered`, `nmId`, `dateFrom`, `dateTo`, `limit`, `offset`.
-
-### Отзывы (вне спеки — ручной справочник)
-
-| Метод | Путь | Назначение | Параметры |
-|---|---|---|---|
-| GET | /api/v1/feedbacks/count | Количество отзывов | hasFoto |
-| GET | /api/v1/feedbacks/count-unanswered | Неотвеченные отзывы | — |
-| GET | /api/v1/feedbacks | Список отзывов | isAnswered, nmId, dateFrom, dateTo, limit, offset |
-| POST | /api/v1/feedbacks/{id}/answer | Ответить на отзыв | feedbackId, text |
-| PATCH | /api/v1/feedbacks/{id}/answer | Редактировать ответ (макс 60 дней) | feedbackId, text |
-| POST | /api/v1/feedbacks/order/return | Запросить возврат по отзыву | feedbackId |
+Уточнения из прежнего ручного справочника (спека даёт пути, но не параметры/грабли):
+- Ответ на вопрос — `PATCH /api/v1/questions`, на отзыв — `POST /api/v1/feedbacks/answer`
+  (редактирование ответа — `PATCH /api/v1/feedbacks/answer`). ID и текст передаются **в теле**;
+  прежний справочник ошибочно указывал ID в URL (`/api/v1/questions/{id}/answer`,
+  `/api/v1/feedbacks/{id}/answer`).
+- Параметры списков (`GET /api/v1/questions`, `GET /api/v1/feedbacks`): `isAnswered`, `nmId`,
+  `dateFrom`, `dateTo`, `limit`, `offset`; для отзывов также `hasFoto` (в `count`).
+- Редактировать ответ на отзыв можно только в течение 60 дней (см. «Подводные камни»).
 
 ## Пример: получить неотвеченные отзывы
 

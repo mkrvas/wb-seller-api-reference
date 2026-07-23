@@ -24,7 +24,7 @@
 <!-- AUTO:BEGIN spec=06-in-store-pickup section=endpoints -->
 | Метод | Путь | Назначение |
 |---|---|---|
-| POST | `/api/marketplace/v3/click-collect/orders/meta/customs-declaration` | Закрепить за сборочными заданиями номера ДТ |
+| POST | `/api/marketplace/v3/click-collect/orders/meta/customs-declaration` | Закрепить номера ДТ за сборочными заданиями |
 | POST | `/api/marketplace/v3/click-collect/orders/meta/delete` | Удалить идентификаторы маркировки сборочных заданий |
 | POST | `/api/marketplace/v3/click-collect/orders/meta/details` | Получить идентификаторы маркировки сборочных заданий |
 | POST | `/api/marketplace/v3/click-collect/orders/meta/gtin` | Закрепить GTIN за сборочными заданиями |

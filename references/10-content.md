@@ -18,7 +18,17 @@
 | Метод | Путь | Назначение |
 |---|---|---|
 | GET | `/api/content/v1/brands` | Бренды |
+| POST | `/api/content/v1/recommendations/list` | Список рекомендаций в карточках товаров |
+| POST | `/api/content/v1/recommendations/set` | Установить рекомендации для товаров |
+| POST | `/content/v2/barcodes` | Генерация баркодов |
+| POST | `/content/v2/cards/delete/trash` | Перенос карточек товаров в корзину |
 | POST | `/content/v2/cards/error/list` | Список несозданных карточек товаров с ошибками |
+| GET | `/content/v2/cards/limits` | Лимиты карточек товаров |
+| POST | `/content/v2/cards/moveNm` | Объединение и разъединение карточек товаров |
+| POST | `/content/v2/cards/recover` | Восстановление карточек товаров из корзины |
+| POST | `/content/v2/cards/update` | Редактирование карточек товаров |
+| POST | `/content/v2/cards/upload` | Создание карточек товаров |
+| POST | `/content/v2/cards/upload/add` | Создание карточек товаров с присоединением |
 | GET | `/content/v2/directory/colors` | Цвет |
 | GET | `/content/v2/directory/countries` | Страна производства |
 | GET | `/content/v2/directory/kinds` | Пол |
@@ -26,6 +36,7 @@
 | GET | `/content/v2/directory/tnved` | ТНВЭД-код |
 | GET | `/content/v2/directory/vat` | Ставка НДС |
 | POST | `/content/v2/get/cards/list` | Список карточек товаров |
+| POST | `/content/v2/get/cards/trash` | Список карточек товаров в корзине |
 | GET | `/content/v2/object/all` | Список предметов |
 | GET | `/content/v2/object/charcs/{subjectId}` | Характеристики предмета |
 | GET | `/content/v2/object/parent/all` | Родительские категории товаров |
@@ -34,19 +45,19 @@
 | DELETE | `/content/v2/tag/{id}` | Удаление ярлыка |
 | PATCH | `/content/v2/tag/{id}` | Изменение ярлыка |
 | GET | `/content/v2/tags` | Список ярлыков |
+| POST | `/content/v3/media/file` | Загрузить медиафайл |
+| POST | `/content/v3/media/save` | Загрузить медиафайлы по ссылкам |
 <!-- AUTO:END -->
 
-> **Примечание — операции записи карточек вне снапшота спеки `02-items` (сохранено из прежнего справочника, проверь вживую):**
-> Авто-таблица из спеки покрывает справочники, характеристики, предметы, теги и чтение списков
-> карточек (`POST /content/v2/get/cards/list`, `POST /content/v2/cards/error/list`), но НЕ операции
-> записи. Их пути:
-> - `POST /content/v2/cards/cursor/list` — список карточек, пагинация cursor (`limit`, `cursor`, `sort`)
-> - `POST /content/v2/cards/update` — обновить карточку (объект с полями товара)
-> - `POST /content/v2/cards/upload/add` — добавить товар к карточке (объект с nmID/SKU)
-> - `POST /content/v2/cards/upload` — загрузить новый товар
-> - `POST /content/v2/cards/delete/trash` — переместить в корзину (nmID)
-> - `POST /content/v2/cards/recover` — восстановить из корзины (nmID)
-> - `POST /content/v2/get/cards/trash` — карточки из корзины (`limit`, `offset`)
+> **Примечание — карточки: чтение и запись (сверка с обновлённым снапшотом спеки `02-items`):**
+> Обновлённый снапшот покрывает и операции записи карточек — они теперь в авто-таблице выше:
+> `POST /content/v2/cards/upload` (загрузить товар), `POST /content/v2/cards/upload/add`
+> (добавить товар к карточке), `POST /content/v2/cards/update` (обновить),
+> `POST /content/v2/cards/delete/trash` / `POST /content/v2/cards/recover` (корзина: убрать/вернуть),
+> `POST /content/v2/get/cards/trash` (список корзины), `POST /content/v2/cards/moveNm` (перенос
+> номенклатур между карточками), `GET /content/v2/cards/limits` (лимиты карточек).
+> **Вне спеки** остаётся только `POST /content/v2/cards/cursor/list` — чтение списка карточек с
+> cursor-пагинацией (`limit`, `cursor`, `sort`); используется в примере ниже.
 
 ### Медиа
 
@@ -73,7 +84,7 @@
 > **Примечание — штрих-коды, теги и справочники (сохранено из прежнего справочника):**
 > - **Теги** (`GET /content/v2/tags`, `POST /content/v2/tag`, `PATCH`/`DELETE /content/v2/tag/{id}`,
 >   `POST /content/v2/tag/nomenclature/link`) — уже в авто-таблице выше (спека их содержит).
-> - `GET /content/v2/barcodes` — генерация штрих-кодов (`nmID`, `quantity`) — **в спеке нет**, оставлен вручную.
+> - `POST /content/v2/barcodes` — генерация штрих-кодов (`nmID`, `quantity`) — теперь в авто-таблице выше.
 > - Справочники, отсутствующие в авто-таблице: `GET /content/v1/directory/sizes` (размеры),
 >   `GET /content/v1/directory/collections` (коллекции), `GET /content/v2/catalog` (структура каталога).
 >   В спеке справочники — версии v2 (`/content/v2/directory/{colors,countries,kinds,seasons,tnved,vat}`),
