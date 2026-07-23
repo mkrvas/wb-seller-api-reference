@@ -44,7 +44,7 @@ Claude Code подхватит скилл автоматически — он с
 | [22-orders-dbw.md](references/22-orders-dbw.md) | Orders DBW — заказы с доставкой силами WB |
 | [23-orders-dbs.md](references/23-orders-dbs.md) | Orders DBS — заказы с доставкой продавцом |
 | [24-in-store-pickup.md](references/24-in-store-pickup.md) | In-Store Pickup — самовывоз из магазина |
-| [25-wbd.md](references/25-wbd.md) | WBD (Wildberries Digital) — спека не скачана, зона пустая |
+| [25-wbd.md](references/25-wbd.md) | WBD (расшифровка не подтверждена) — спека не скачана, зона пустая |
 | [26-supplies-fbw.md](references/26-supplies-fbw.md) | Supplies FBW — поставки на склады WB |
 
 ## Уровень детализации

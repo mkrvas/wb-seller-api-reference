@@ -17,11 +17,10 @@ DBW (Доставка курьером WB) — модель, при которо
 **Rate limit:** 300 запр/мин (общий лимит хоста Marketplace API; 409 Conflict — 5 запросов, см. `01-rate-limits-retry.md`)  
 **Версия:** /api/v3/
 
-> В спеке `04-orders-dbw` поле `servers` пустое (`[]`). Хост взят из `00-overview.md`
-> (там `Marketplace → marketplace-api.wildberries.ru` — уже задокументированный факт,
-> не предположение) — пути спеки (`/api/v3/dbw/...`, `/api/marketplace/v3/dbw/...`)
-> лежат в тех же префиксах, что и семейство FBS (`11-marketplace.md`) и подтверждённое
-> семейство Самовывоз (`06-in-store-pickup`, там `servers` указан явно).
+> Хост подтверждён per-path записями `servers:` в спеке 04-orders-dbw; корневого
+> поля `servers` в спеке нет, поэтому `--list` показывает пустой список. Совпадает
+> с `00-overview.md` (`Marketplace → marketplace-api.wildberries.ru`) и с путями
+> семейства FBS (`11-marketplace.md`) и Самовывоз (`06-in-store-pickup`).
 
 ## Эндпоинты
 

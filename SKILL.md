@@ -53,7 +53,7 @@ description: >
 | [22-orders-dbw.md](references/22-orders-dbw.md) | Orders DBW (доставка силами WB) | marketplace-api.wildberries.ru |
 | [23-orders-dbs.md](references/23-orders-dbs.md) | Orders DBS (доставка продавцом) | marketplace-api.wildberries.ru |
 | [24-in-store-pickup.md](references/24-in-store-pickup.md) | Самовывоз из магазина | marketplace-api.wildberries.ru |
-| [25-wbd.md](references/25-wbd.md) | WBD (Wildberries Digital) — спека не скачана, зона пустая | не подтверждён |
+| [25-wbd.md](references/25-wbd.md) | WBD (расшифровка не подтверждена) — спека не скачана, зона пустая | не подтверждён |
 | [26-supplies-fbw.md](references/26-supplies-fbw.md) | Supplies FBW (поставки на склады WB) | supplies-api.wildberries.ru |
 
 ## Быстрый справочник
