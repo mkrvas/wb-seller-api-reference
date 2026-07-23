@@ -16,7 +16,7 @@ FBS заказы (сборочные задания), поставки, упра
 |---|---|---|
 | GET | `/api/marketplace/v3/fbs/orders/archive` | Получить список архивных сборочных заданий |
 | POST | `/api/marketplace/v3/orders/meta` | Получить идентификаторы маркировки сборочных заданий |
-| PUT | `/api/marketplace/v3/orders/{orderId}/meta/customs-declaration` | Закрепить за сборочным заданием номер ДТ |
+| PUT | `/api/marketplace/v3/orders/{orderId}/meta/customs-declaration` | Закрепить номер ДТ за сборочным заданием |
 | GET | `/api/marketplace/v3/supplies/{supplyId}/order-ids` | Получить ID сборочных заданий поставки |
 | PATCH | `/api/marketplace/v3/supplies/{supplyId}/orders` | Добавить сборочные задания к поставке |
 | GET | `/api/v3/orders` | Получить информацию о сборочных заданиях |
@@ -29,10 +29,10 @@ FBS заказы (сборочные задания), поставки, упра
 | PATCH | `/api/v3/orders/{orderId}/cancel` | Отменить сборочное задание |
 | DELETE | `/api/v3/orders/{orderId}/meta` | Удалить идентификаторы маркировки сборочного задания |
 | PUT | `/api/v3/orders/{orderId}/meta/expiration` | Закрепить за сборочным заданием срок годности товара |
-| PUT | `/api/v3/orders/{orderId}/meta/gtin` | Закрепить за сборочным заданием GTIN |
-| PUT | `/api/v3/orders/{orderId}/meta/imei` | Закрепить за сборочным заданием IMEI |
-| PUT | `/api/v3/orders/{orderId}/meta/sgtin` | Закрепить за сборочным заданием код маркировки Честного знака |
-| PUT | `/api/v3/orders/{orderId}/meta/uin` | Закрепить за сборочным заданием УИН |
+| PUT | `/api/v3/orders/{orderId}/meta/gtin` | Закрепить GTIN за сборочным заданием |
+| PUT | `/api/v3/orders/{orderId}/meta/imei` | Закрепить IMEI за сборочным заданием |
+| PUT | `/api/v3/orders/{orderId}/meta/sgtin` | Закрепить код маркировки Честного знака за сборочным заданием |
+| PUT | `/api/v3/orders/{orderId}/meta/uin` | Закрепить УИН за сборочным заданием |
 | GET | `/api/v3/passes` | Получить список пропусков |
 | POST | `/api/v3/passes` | Создать пропуск |
 | GET | `/api/v3/passes/offices` | Получить список складов, для которых требуется пропуск |

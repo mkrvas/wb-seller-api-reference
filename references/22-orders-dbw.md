@@ -28,6 +28,9 @@ DBW (Доставка курьером WB) — модель, при которо
 | Метод | Путь | Назначение |
 |---|---|---|
 | POST | `/api/marketplace/v3/dbw/orders/client` | Информация о покупателе |
+| POST | `/api/marketplace/v3/dbw/orders/meta/delete` | Удалить идентификаторы маркировки сборочных заданий |
+| POST | `/api/marketplace/v3/dbw/orders/meta/details` | Получить идентификаторы маркировки сборочных заданий |
+| POST | `/api/marketplace/v3/dbw/orders/meta/sgtin` | Закрепить коды маркировки Честного знака за сборочными заданиями |
 | POST | `/api/marketplace/v3/dbw/orders/status/deliver` | Перевести сборочные задания в доставку |
 | GET | `/api/v3/dbw/orders` | Получить информацию о завершенных сборочных заданиях |
 | POST | `/api/v3/dbw/orders/courier` | Информация о курьере |
@@ -35,7 +38,12 @@ DBW (Доставка курьером WB) — модель, при которо
 | GET | `/api/v3/dbw/orders/new` | Получить список новых сборочных заданий |
 | POST | `/api/v3/dbw/orders/status` | Получить статусы сборочных заданий |
 | POST | `/api/v3/dbw/orders/stickers` | Получить стикеры сборочных заданий |
+| PATCH | `/api/v3/dbw/orders/{orderId}/cancel` | Отменить сборочное задание |
 | PATCH | `/api/v3/dbw/orders/{orderId}/confirm` | Перевести на сборку |
+| GET | `/api/v3/dbw/orders/{orderId}/meta` | Получить идентификаторы маркировки сборочного задания ⚠️ deprecated |
+| PUT | `/api/v3/dbw/orders/{orderId}/meta/gtin` | Закрепить GTIN за сборочным заданием |
+| PUT | `/api/v3/dbw/orders/{orderId}/meta/imei` | Закрепить IMEI за сборочным заданием |
+| PUT | `/api/v3/dbw/orders/{orderId}/meta/uin` | Закрепить УИН за сборочным заданием |
 <!-- AUTO:END -->
 
 ## Ссылка на оригинал

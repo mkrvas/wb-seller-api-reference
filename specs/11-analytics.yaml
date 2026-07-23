@@ -6260,4 +6260,450 @@ components:
             dynamics:
               example: 0
               type: integer
-              description: Динамика по сравнени
+              description: Динамика по сравнению с предыдущим периодом, %
+        disqualified:
+          example: 7
+          type: integer
+          description: Отзывы, исключённые из рейтинга
+    DistributionTableItem:
+      type: object
+      required:
+        - nmId
+        - title
+        - vendorCode
+        - subjectId
+        - subjectName
+        - brandName
+        - tagName
+        - tagId
+        - pinnedFeedback
+        - rating
+        - feedbackRating
+        - feedbackCount
+        - fiveStar
+        - fourStar
+        - threeStar
+        - twoStar
+        - oneStar
+        - disqualified
+        - isShadowed
+      properties:
+        nmId:
+          example: 123456789
+          type: integer
+          format: int64
+          description: Артикул WB
+        title:
+          example: iPh 17 512 ГБ Серебристый
+          type: string
+          description: Название товара
+        vendorCode:
+          example: wb3ha2668w
+          type: string
+          description: Артикул продавца
+        subjectId:
+          example: 50
+          description: ID предмета
+          type: integer
+          format: uint64
+        subjectName:
+          example: Phones
+          type: string
+          description: Название предмета
+        brandName:
+          example: Attlee
+          type: string
+          description: Бренд
+        tagName:
+          example: Phones
+          type: string
+          description: Название ярлыка
+        tagId:
+          example: 65
+          type: integer
+          format: int64
+          description: ID ярлыка
+        pinnedFeedback:
+          example: true
+          type: boolean
+          description: Отзыв закреплён
+        rating:
+          example: 10
+          type: number
+          format: float64
+          description: Рейтинг карточки товара
+        feedbackRating:
+          type: object
+          required:
+            - current
+            - percentile
+          description: Рейтинг товара по отзывам
+          properties:
+            current:
+              example: 3.87
+              type: number
+              format: float64
+              description: Текущий рейтинг
+            dynamics:
+              example: 0.31
+              type: number
+              format: float64
+              description: Динамика по сравнению с предыдущим периодом, %
+            percentile:
+              example: 1.7
+              type: number
+              format: float64
+              nullable: true
+              description: Сколько процентов товаров этого предмета у других продавцов имеют рейтинг ниже, чем у этого товара
+        feedbackCount:
+          type: object
+          required:
+            - current
+          description: Все отзывы за период
+          properties:
+            current:
+              example: 12
+              type: integer
+              description: Прирост оценок за период
+            dynamics:
+              example: 9
+              type: integer
+              description: Динамика по сравнению с предыдущим периодом, %
+        fiveStar:
+          type: object
+          required:
+            - current
+          description: Отзывы 5 звёзд
+          properties:
+            current:
+              example: 9
+              type: integer
+              description: Прирост оценок за период
+            dynamics:
+              example: 7
+              type: integer
+              description: Динамика по сравнению с предыдущим периодом, %
+        fourStar:
+          type: object
+          required:
+            - current
+          description: Отзывы 4 звезды
+          properties:
+            current:
+              example: 0
+              type: integer
+              description: Прирост оценок за период
+            dynamics:
+              example: -1
+              type: integer
+              description: Динамика по сравнению с предыдущим периодом, %
+        threeStar:
+          type: object
+          required:
+            - current
+          description: Отзывы 3 звезды
+          properties:
+            current:
+              example: 1
+              type: integer
+              description: Прирост оценок за период
+            dynamics:
+              example: 1
+              type: integer
+              description: Динамика по сравнению с предыдущим периодом, %
+        twoStar:
+          type: object
+          required:
+            - current
+          description: Отзывы 2 звезды
+          properties:
+            current:
+              example: 2
+              type: integer
+              description: Прирост оценок за период
+            dynamics:
+              example: 2
+              type: integer
+              description: Динамика по сравнению с предыдущим периодом, %
+        oneStar:
+          type: object
+          required:
+            - current
+          description: Отзывы 1 звезда
+          properties:
+            current:
+              example: 0
+              type: integer
+              description: Прирост оценок за период
+            dynamics:
+              example: 0
+              type: integer
+              description: Динамика по сравнению с предыдущим периодом, %
+        disqualified:
+          example: 7
+          type: integer
+          description: Отзывы, исключённые из рейтинга
+        isShadowed:
+          example: true
+          type: boolean
+          description: |
+            Является ли товар скрытым из каталога:
+              - `true` — товар скрыт из каталога
+              - `false` — товар не скрыт из каталога
+    ErrorObject:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Заголовок ошибки
+          example: SKU not found
+        detail:
+          type: string
+          description: Детали ошибки
+          example: SKU xxx doesn't exist
+        requestId:
+          type: string
+          description: Уникальный ID запроса
+          example: fb25c9e9-cae8-52db-b68e-736c1466a3f5
+        origin:
+          type: string
+          description: ID внутреннего сервиса WB
+          example: analytic-open-api
+      required:
+        - title
+        - detail
+        - requestId
+        - origin
+    Currency:
+      type: string
+      example: RUB
+      description: Валюта отчёта
+    Response403General:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Заголовок ошибки
+          example: forbidden
+        detail:
+          type: string
+          description: Детали ошибки
+          example: base token is not allowed
+        code:
+          type: string
+          description: Внутренний код ошибки
+          example: base token is not allowed for this path
+        requestId:
+          type: string
+          description: ID запроса
+          example: 722199b2e15bbca48cc1d488a7989976
+        origin:
+          type: string
+          description: ID внутреннего сервиса WB
+          example: s2s-finance
+        status:
+          type: number
+          description: HTTP статус-код
+          example: 403
+        statusText:
+          type: string
+          description: Расшифровка HTTP статус-кода
+          example: Forbidden
+        timestamp:
+          type: string
+          format: date-time
+          description: Дата и время запроса
+          example: '2026-05-25T02:47:09Z'
+  examples:
+    SalesFunnelItemRes:
+      description: ''
+      value: |
+        nmID, dt, openCardCount, addToCartCount, ordersCount, ordersSumRub, buyoutsCount, buyoutsSumRub, cancelCount, cancelSumRub, addToCartConversion, cartToOrderConversion, buyoutPercent, addToWishlist, currency
+        70027655,2024-11-21,1,0,0,0,0,0,0,0,0,0,0,0,RUB
+        ...
+        ...
+        150317666,2024-11-21,2,0,0,0,0,0,0,0,0,0,0,0,RUB
+    SalesFunnelGroupRes:
+      description: ''
+      value: |
+        dt, openCardCount, addToCartCount, ordersCount, ordersSumRub, buyoutsCount, buyoutsSumRub, cancelCount, cancelSumRub, addToCartConversion, cartToOrderConversion, buyoutPercent, addToWishlist, currency
+        2024-11-21,1,0,0,0,0,0,0,0,0,0,0,0,RUB
+        ...
+        ...
+        2024-11-21,2,0,0,0,0,0,0,0,0,0,0,0,RUB
+    SearchReportGroupRes:
+      description: ''
+      value: |
+        SubjectName,SubjectID,BrandName,TagID,AveragePosition,OpenCard,AddToCart,OpenToCart,Orders,CartToOrder,Visibility,AveragePositionPast,OpenCardPast,AddToCartPast,OpenToCartPast,OrdersPast,CartToOrderPast,VisibilityPast
+        Смартфоны,0,Abble,0,1,4,0,0,0,0,100,1,8,0,0,0,0,100
+        Смартфоны,0,abble,0,1,63,0,0,0,0,100,1,91,0,0,0,0,100
+    SearchReportItemRes:
+      description: ''
+      value: |
+        NmID,VendorCode,Name,Subject,Brand,IsAdvertised,IsRated,Rating,FeedbackRating,MinPrice,MaxPrice,AveragePosition,OpenCard,AddToCart,OpenToCart,Orders,CartToOrder,Visibility,AveragePositionPast,OpenCardPast,AddToCartPast,OpenToCartPast,OrdersPast,CartToOrderPast,VisibilityPast,IsSubstitutedSKU,Currency
+        268913787,wb3ha2668w,iPhone 13 256 ГБ Серебристый,Смартфоны,abble,false,true,10,0,140000,140000,1,51,0,0,0,0,100,1,91,0,0,0,0,100,true,RUB
+        246935327,wb729wy604,,Бирки для ключей,,false,true,1.5,0,89,89,1,37,19,51,6,32,100,1,14,21,150,3,14,100,true,RUB
+    SearchReportTextRes:
+      description: ''
+      value: |
+        Text,NmID,SubjectName,BrandName,VendorCode,Name,Rating,FeedbackRating,MinPrice,MaxPrice,Frequency,MedianPosition,AveragePosition,OpenCard,OpenCardPercentile,AddToCart,AddToCartPercentile,OpenToCart,OpenToCartPercentile,Orders,OrdersPercentile,CartToOrder,CartToOrderPercentile,Visibility,FrequencyPast,MedianPositionPast,AveragePositionPast,OpenCardPast,AddToCartPast,OpenToCartPast,OrdersPast,CartToOrderPast,VisibilityPast,Currency
+        267945415,267945415,Термокомплекты для малышей,Lopsa,wb44h5ku68,1,5.5,0.0,47,47,156,1,1,235,100,98,100,42,100,0,100,0,100,100,15,1,1,19,16,84,0,0,100,RUB
+        термобелье мужское,267945415,Термокомплекты для малышей,Lopsa,wb44h5ku68,1,5.5,0.0,47,47,52633,2,2,5,0,0,0,0,0,0,0,0,0,100,49975,0,0,0,0,0,0,0,0,RUB
+        267945415,296070764,Термокомплекты для малышей,Lopsa,wb51k31eyg,2,1.5,0.0,88,88,156,1,1,82,100,22,100,27,100,0,100,0,100,100,15,5,5,1,1,100,0,0,100,RUB
+        термобелье мужское,296070764,Термокомплекты для малышей,Lopsa,wb51k31eyg,2,1.5,0.0,88,88,52633,3,3,2,0,0,0,0,0,0,0,0,0,100,49975,0,0,0,0,0,0,0,0,RUB
+        211131895,211131895,Костюмы,H&M,wb51k31eyg!!!,костюм,10.0,5.0,102,102,36,1,1,44,100,6,100,14,0,5,100,83,100,100,0,0,0,0,0,0,0,0,0,RUB
+        221411786,211131895,Костюмы,H&M,wb51k31eyg!!!,костюм,10.0,5.0,102,102,19,1,1,2,11,0,0,0,0,0,0,0,0,100,3,0,0,0,0,0,0,0,0
+        женские блузки,211131895,Костюмы,H&M,wb51k31eyg!!!,костюм,10.0,5.0,102,102,38383,14,14,1,0,0,0,0,0,0,0,0,0,79,29764,0,0,0,0,0,0,0,0,RUB
+    InventoryMetricsReportRes:
+      description: ''
+      value: |
+        VendorCode,Name,NmID,SubjectName,BrandName,SizeName,ChrtID,RegionName,OfficeName,Availability,OrdersCount,OrdersSum,BuyoutCount,BuyoutSum,BuyoutPercent,AvgOrders,StockCount,StockSum,SaleRate,AvgStockTurnover,ToClientCount,FromClientCount,Price,OfficeMissingTime,LostOrdersCount,LostOrdersSum,LostBuyoutsCount,LostBuyoutsSum,AvgOrdersByMonth_11.2013,AvgOrdersByMonth_12.2013,AvgOrdersByMonth_01.2014,AvgOrdersByMonth_02.2014,AvgOrdersByMonth_03.2014,AvgOrdersByMonth_04.2014,AvgOrdersByMonth_05.2014,AvgOrdersByMonth_06.2014,AvgOrdersByMonth_07.2014,Currency
+        037456337500,Robust High-Performance Robot,1031126854494603033,Термокомплекты,Amazon Web Services,67-69,987654321,Central,Office1,nonLiquid,521124,521124000,123,123000,10,0.57,20,20000,-3,5,111,222,14008,-3,0.71,0.77,0.93,0.68,74067.12,29935.79,8895.27,37019.65,37934.89,62412.64,29857.97,0.00,72465.85,RUB
+        089201683406,Luxe Blender Nexus,8904325039176595105,Термокомплекты,iRecycle,54-56,987654071,North,Office2,nonLiquid,1231,1231000,456,456000,20,0.71,30,30000,2,-3,333,444,85162,-2,0.90,0.96,0.31,0.93,,,,,,2628.77,0.00,70534.86,0.00,RUB
+        059509746730,Pure Quartz Speaker,6780550382946145952,Термокомплекты,Next Step Living,60-62,984574321,South,Office3,balanced,3214,3214000,789,789000,30,0.30,40,40000,1,11,555,666,66484,-3,0.03,0.08,0.71,0.48,,,47297.22,55308.71,6463.43,48664.95,0.00,0.00,74502.72,RUB
+        058266400986,Modular Stainless Monitor,3475827302459171321,Термокомплекты,TagniFi,65-67,926554321,East,Office4,nonActual,312,312000,123,123000,40,0.71,50,50000,13,-2,666,888,53254,-3,0.96,0.01,0.97,0.92,,67227.50,4608.98,90300.06,15890.52,0.00,0.00,41891.11,0.00,RUB
+        070198970053,Microwave Quick Eco-Friendly,4734922922328623947,Термокомплекты,Boston Consulting Group,46-48,983234321,West,Office5,nonLiquid,343,343000,456,456000,50,0.92,60,60000,17,-2,777,101010,43823,-1,0.84,0.14,0.26,0.75,30463.57,8073.43,26678.35,0.00,339.99,56237.24,2172.75,74665.30,14296.76,RUB
+    InventoryHistoryReportRes:
+      description: ''
+      value: |
+        VendorCode,Name,NmID,SubjectName,BrandName,SizeName,ChrtID,OfficeName,13.12.2025,14.12.2025,15.12.2025
+        41058/прозрачный,Чехол для телефона прозрачный111,5870243,Чехлы для телефонов,Arizona.kz,-,20964883,Коледино,1,1,1
+        41058/прозрачный,Чехол для телефона прозрачный111,5870243,Чехлы для телефонов,Arizona.kz,-,20964883,Маркетплейс,1000,997,923
+        wb59toaotq,Брюки,12862180,Болеро,,O,39533928,Маркетплейс,6,8,4
+        451263124,Брюки 123,12862181,Брюки,DUB,A,39533929,Маркетплейс,11,10,11
+        wb33q6504x,ПАЗЛ,13088345,Пазлы,CoolPuzzles,-,40030565,Маркетплейс,2,28,54
+        4854554654/0,Альбом,13480414,Альбомы для коллекционирования,Эконом,-,40873579,Маркетплейс,25,20,19
+        14053651Черный,Дубленка 333334,14652473,Дубленки,SARTORI DODICI,48,43253666,Маркетплейс,30,30,30
+        HGF56X,Чай,14986284,Чай,Lipton,-,43804848,Коледино,154,254,223
+        123401,Кроссовки,14917832,Кофе молотый,,-,43807552,Казань,0,0,0
+        123401,Кроссовки,14917832,Кофе молотый,,-,43807552,Подольск,4,0,23
+  responses:
+    '401':
+      description: Не авторизован
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Заголовок ошибки
+              detail:
+                type: string
+                description: Детали ошибки
+              code:
+                type: string
+                description: Внутренний код ошибки
+              requestId:
+                type: string
+                description: Уникальный ID запроса
+              origin:
+                type: string
+                description: ID внутреннего сервиса WB
+              status:
+                type: number
+                description: HTTP статус-код
+              statusText:
+                type: string
+                description: Расшифровка HTTP статус-кода
+              timestamp:
+                type: string
+                format: date-time
+                description: Дата и время запроса
+          example:
+            title: unauthorized
+            detail: 'token problem; token is malformed: could not base64 decode signature: illegal base64 data at input byte 84'
+            code: 07e4668e--a53a3d31f8b0-[UK-oWaVDUqNrKG]; 03bce=277; 84bd353bf-75
+            requestId: 7b80742415072fe8b6b7f7761f1d1211
+            origin: s2s-api-auth-catalog
+            status: 401
+            statusText: Unauthorized
+            timestamp: '2024-09-30T06:52:38Z'
+    '402':
+      description: Требуется платёж
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Заголовок ошибки
+              detail:
+                type: string
+                description: Детали ошибки. Ошибка возвращается только сервисам из [Каталога решений для бизнеса](/business-solutions)
+          example:
+            title: payment required
+            detail: wb solution for business has insufficient funds on its balance. please top up the balance in the company's personal account https://dev.wildberries.ru/company
+    '429':
+      description: Слишком много запросов
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: Заголовок ошибки
+              detail:
+                type: string
+                description: Детали ошибки
+              code:
+                type: string
+                description: Внутренний код ошибки
+              requestId:
+                type: string
+                description: Уникальный ID запроса
+              origin:
+                type: string
+                description: ID внутреннего сервиса WB
+              status:
+                type: number
+                description: HTTP статус-код
+              statusText:
+                type: string
+                description: Расшифровка HTTP статус-кода
+              timestamp:
+                type: string
+                format: date-time
+                description: Дата и время запроса
+          example:
+            title: too many requests
+            detail: limited by c122a060-a7fb-4bb4-abb0-32fd4e18d489
+            code: 07e4668e-ac2242c5c8c5-[UK-4dx7JUdskGZ]
+            requestId: 9d3c02cc698f8b041c661a7c28bed293
+            origin: s2s-api-auth-catalog
+            status: 429
+            statusText: Too Many Requests
+            timestamp: '2024-09-30T06:52:38Z'
+    BadRequestErrorResponse:
+      description: Неправильный запрос
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+          examples:
+            errorExample:
+              value:
+                title: Invalid request body
+                detail: 'code=400, message=invalid: positionCluster (field required), internal=invalid: positionCluster (field required)'
+                requestId: 51b7828b-e298-4dfa-b7cd-45ab179921d3
+                origin: analytics-open-api
+    AuthorizationErrorResponse:
+      description: Доступ запрещён
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+          examples:
+            errorExample:
+              value:
+                title: Authorization error
+                detail: Authorization error
+                requestId: 51b7828b-e298-4dfa-b7cd-45ab179921d3
+                origin: analytics-open-api
+  securitySchemes:
+    HeaderApiKey:
+      type: apiKey
+      name: Authorization
+      in: header

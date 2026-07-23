@@ -23,12 +23,31 @@
 <!-- AUTO:BEGIN spec=09-communications section=endpoints -->
 | Метод | Путь | Назначение |
 |---|---|---|
+| DELETE | `/api/feedbacks/v1/pins` | Открепить отзывы |
+| GET | `/api/feedbacks/v1/pins` | Список закреплённых и откреплённых отзывов |
+| POST | `/api/feedbacks/v1/pins` | Закрепить отзывы |
+| GET | `/api/feedbacks/v1/pins/count` | Количество закреплённых и откреплённых отзывов |
+| GET | `/api/feedbacks/v1/pins/limits` | Лимиты закреплённых отзывов |
+| PATCH | `/api/v1/claim` | Ответ на заявку покупателя |
+| GET | `/api/v1/claims` | Заявки покупателей на возврат |
+| GET | `/api/v1/feedback` | Получить отзыв по ID |
+| GET | `/api/v1/feedbacks` | Список отзывов |
+| PATCH | `/api/v1/feedbacks/answer` | Отредактировать ответ на отзыв |
+| POST | `/api/v1/feedbacks/answer` | Ответить на отзыв |
+| GET | `/api/v1/feedbacks/archive` | Список архивных отзывов |
+| GET | `/api/v1/feedbacks/count` | Количество отзывов |
+| GET | `/api/v1/feedbacks/count-unanswered` | Необработанные отзывы |
+| POST | `/api/v1/feedbacks/order/return` | Возврат товара по ID отзыва |
 | GET | `/api/v1/new-feedbacks-questions` | Непросмотренные отзывы и вопросы |
 | GET | `/api/v1/question` | Получить вопрос по ID |
 | GET | `/api/v1/questions` | Список вопросов |
 | PATCH | `/api/v1/questions` | Работа с вопросами |
 | GET | `/api/v1/questions/count` | Количество вопросов |
 | GET | `/api/v1/questions/count-unanswered` | Неотвеченные вопросы |
+| GET | `/api/v1/seller/chats` | Список чатов |
+| GET | `/api/v1/seller/download/{id}` | Получить файл из сообщения |
+| GET | `/api/v1/seller/events` | События чатов |
+| POST | `/api/v1/seller/message` | Отправить сообщение |
 <!-- AUTO:END -->
 
 **Примечание:** авто-таблица выше — из спеки `09-communications`, которая покрывает только

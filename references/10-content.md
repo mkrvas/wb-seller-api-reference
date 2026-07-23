@@ -18,7 +18,39 @@
 | Метод | Путь | Назначение |
 |---|---|---|
 | GET | `/api/content/v1/brands` | Бренды |
+| POST | `/api/content/v1/recommendations/list` | Список рекомендаций в карточках товаров |
+| POST | `/api/content/v1/recommendations/set` | Установить рекомендации для товаров |
+| POST | `/api/discounts-prices/v1/upload/task/b2b/wholesale` | Установить оптовые скидки для B2B-продаж |
+| GET | `/api/v2/buffer/goods/task` | Детализация необработанной загрузки |
+| GET | `/api/v2/buffer/tasks` | Состояние необработанной загрузки |
+| GET | `/api/v2/history/goods/task` | Детализация обработанной загрузки |
+| GET | `/api/v2/history/tasks` | Состояние обработанной загрузки |
+| GET | `/api/v2/list/goods/filter` | Получить товары с ценами |
+| POST | `/api/v2/list/goods/filter` | Получить товары с ценами по артикулам |
+| GET | `/api/v2/list/goods/size/nm` | Получить размеры товара с ценами |
+| GET | `/api/v2/quarantine/goods` | Получить товары в карантине |
+| POST | `/api/v2/upload/task` | Установить цены и скидки |
+| POST | `/api/v2/upload/task/club-discount` | Установить скидки WB Клуба |
+| POST | `/api/v2/upload/task/size` | Установить цены для размеров |
+| GET | `/api/v3/dbw/warehouses/{warehouseId}/contacts` | Список контактов |
+| PUT | `/api/v3/dbw/warehouses/{warehouseId}/contacts` | Обновить список контактов |
+| GET | `/api/v3/offices` | Получить список складов WB |
+| DELETE | `/api/v3/stocks/{warehouseId}` | Удалить остатки товаров |
+| POST | `/api/v3/stocks/{warehouseId}` | Получить остатки товаров |
+| PUT | `/api/v3/stocks/{warehouseId}` | Обновить остатки товаров |
+| GET | `/api/v3/warehouses` | Получить список складов продавца |
+| POST | `/api/v3/warehouses` | Создать склад продавца |
+| DELETE | `/api/v3/warehouses/{warehouseId}` | Удалить склад продавца |
+| PUT | `/api/v3/warehouses/{warehouseId}` | Обновить склад продавца |
+| POST | `/content/v2/barcodes` | Генерация баркодов |
+| POST | `/content/v2/cards/delete/trash` | Перенос карточек товаров в корзину |
 | POST | `/content/v2/cards/error/list` | Список несозданных карточек товаров с ошибками |
+| GET | `/content/v2/cards/limits` | Лимиты карточек товаров |
+| POST | `/content/v2/cards/moveNm` | Объединение и разъединение карточек товаров |
+| POST | `/content/v2/cards/recover` | Восстановление карточек товаров из корзины |
+| POST | `/content/v2/cards/update` | Редактирование карточек товаров |
+| POST | `/content/v2/cards/upload` | Создание карточек товаров |
+| POST | `/content/v2/cards/upload/add` | Создание карточек товаров с присоединением |
 | GET | `/content/v2/directory/colors` | Цвет |
 | GET | `/content/v2/directory/countries` | Страна производства |
 | GET | `/content/v2/directory/kinds` | Пол |
@@ -26,6 +58,7 @@
 | GET | `/content/v2/directory/tnved` | ТНВЭД-код |
 | GET | `/content/v2/directory/vat` | Ставка НДС |
 | POST | `/content/v2/get/cards/list` | Список карточек товаров |
+| POST | `/content/v2/get/cards/trash` | Список карточек товаров в корзине |
 | GET | `/content/v2/object/all` | Список предметов |
 | GET | `/content/v2/object/charcs/{subjectId}` | Характеристики предмета |
 | GET | `/content/v2/object/parent/all` | Родительские категории товаров |
@@ -34,6 +67,8 @@
 | DELETE | `/content/v2/tag/{id}` | Удаление ярлыка |
 | PATCH | `/content/v2/tag/{id}` | Изменение ярлыка |
 | GET | `/content/v2/tags` | Список ярлыков |
+| POST | `/content/v3/media/file` | Загрузить медиафайл |
+| POST | `/content/v3/media/save` | Загрузить медиафайлы по ссылкам |
 <!-- AUTO:END -->
 
 > **Примечание — операции записи карточек вне снапшота спеки `02-items` (сохранено из прежнего справочника, проверь вживую):**
