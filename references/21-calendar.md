@@ -39,9 +39,12 @@
 ## Пример
 
 ```bash
-curl -X GET "https://dp-calendar-api.wildberries.ru/api/v1/calendar/promotions" \
+curl -X GET "https://dp-calendar-api.wildberries.ru/api/v1/calendar/promotions?startDateTime=2026-07-01T00:00:00Z&endDateTime=2026-07-31T23:59:59Z&allPromo=false" \
   -H "Authorization: Bearer TOKEN"
 ```
+
+Параметры `startDateTime`, `endDateTime`, `allPromo` — обязательные (по спеке);
+`allPromo=false` — только акции с товарами продавца.
 
 ## Практическое применение
 
