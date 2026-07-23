@@ -44,7 +44,7 @@ Claude Code подхватит скилл автоматически — он с
 | [22-orders-dbw.md](references/22-orders-dbw.md) | Orders DBW — заказы с доставкой силами WB |
 | [23-orders-dbs.md](references/23-orders-dbs.md) | Orders DBS — заказы с доставкой продавцом |
 | [24-in-store-pickup.md](references/24-in-store-pickup.md) | In-Store Pickup — самовывоз из магазина |
-| [25-wbd.md](references/25-wbd.md) | WBD (расшифровка не подтверждена) — спека не скачана, зона пустая |
+| [25-wbd.md](references/25-wbd.md) | WBD (расшифровка не подтверждена) — портал не публикует спеку, файл-заготовка |
 | [26-supplies-fbw.md](references/26-supplies-fbw.md) | Supplies FBW — поставки на склады WB |
 
 ## Уровень детализации
@@ -52,7 +52,7 @@ Claude Code подхватит скилл автоматически — он с
 Файлы неравномерны по глубине, и это осознанно:
 
 - **Боевые** (Finance, Advertising, Statistics, Analytics) — содержат факты, проверенные живыми запросами с реальным токеном: реальные ответы API, эндпоинты, которые официальная документация не описывает или описывает неточно, конкретные даты изменений и deprecation.
-- **Справочные** (Chat, Returns, Documents, Calendar, Feedbacks, Tariffs, Prices, Content, Marketplace, Orders DBW, Orders DBS, Самовывоз, WBD, Supplies FBW) — конспект официальной документации: пути, методы, параметры, без live-тестирования каждой мелочи. WBD — особый случай: спека не скачана (см. «Автообновление»), файл пока пуст.
+- **Справочные** (Chat, Returns, Documents, Calendar, Feedbacks, Tariffs, Prices, Content, Marketplace, Orders DBW, Orders DBS, Самовывоз, WBD, Supplies FBW) — конспект официальной документации: пути, методы, параметры, без live-тестирования каждой мелочи. WBD — особый случай: портал не публикует его спеку, файл — заготовка (см. примечание в самом файле).
 
 Ориентируйтесь на это при выборе, насколько слепо доверять конкретному файлу.
 

@@ -59,6 +59,8 @@ specs:
     files:
       - {path: references/12a-finance.md, exclude_prefixes: ["/api/v1/documents/"]}
       - {path: references/20-documents.md, include_prefixes: ["/api/v1/documents/"]}
-  # WBD (WB Доставка) — файл создаёт Task 5. Запись инертна.
-  - name: 14-wbd
-    files: [{path: references/25-wbd.md}]
+  # WBD исключён из скачивания: официальный портал НЕ публикует спеку
+  # (yaml/ru/14-wbd.yaml -> {"error":"File not found"}, зонд 2026-07-23).
+  # При появлении спеки на портале вернуть запись:
+  #   - name: 14-wbd
+  #     files: [{path: references/25-wbd.md}]
