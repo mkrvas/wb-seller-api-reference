@@ -1,0 +1,54 @@
+name: update-specs
+on:
+  schedule:
+    - cron: "30 3 * * *"   # ежедневно 03:30 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Установка зависимостей
+        run: |
+          pip install -q requests pyyaml playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Скачивание спек (all-or-nothing)
+        run: python scripts/fetch_specs.py --out specs
+
+      - name: Перегенерация авто-зон
+        run: python scripts/generate_tables.py
+
+      - name: Дифф и описание PR
+        id: drift
+        run: |
+          python scripts/check_drift.py > pr_body.md
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: PR с обновлением
+        if: steps.drift.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: auto/spec-update-${{ steps.drift.outputs.date }}
+          title: "Спеки WB обновились — ${{ steps.drift.outputs.date }}"
+          body-path: pr_body.md
+          commit-message: "auto: обновление снапшота спек и таблиц эндпоинтов"
+          add-paths: |
+            specs/
+            references/
+          delete-branch: true
