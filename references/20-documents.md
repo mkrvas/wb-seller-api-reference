@@ -41,7 +41,7 @@
 ## Пример
 
 ```bash
-curl -X GET "https://documents-api.wildberries.ru/api/v1/documents?limit=50&offset=0" \
+curl -X GET "https://documents-api.wildberries.ru/api/v1/documents/list?limit=50&offset=0" \
   -H "Authorization: Bearer TOKEN"
 ```
 

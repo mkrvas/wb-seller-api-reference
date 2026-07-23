@@ -52,17 +52,20 @@
 | POST | /api/v2/discounts/edit | Изменить скидки | nmID, discount_percent |
 | POST | /api/v1/wildberries-discounts | Управление клубными скидками | nmID, clubDiscount |
 
-## Пример: изменить цену
+## Пример: установить цены и скидки
+
+Актуальный путь по авто-таблице — `POST /api/v2/upload/task` (обёртка `data`, а не `prices` —
+см. примечание в начале файла):
 
 ```bash
-curl -X POST https://discounts-prices-api.wildberries.ru/api/v2/prices/update \
+curl -X POST https://discounts-prices-api.wildberries.ru/api/v2/upload/task \
   -H "Authorization: Bearer TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "prices": [
+    "data": [
       {
         "nmID": 123456,
-        "price": 2999.00,
+        "price": 2999,
         "discount": 15
       }
     ]
@@ -76,18 +79,18 @@ curl -X POST https://discounts-prices-api.wildberries.ru/api/v2/prices/update \
 | `nmID` | да | ID товара |
 | `price` | да | Цена без скидки |
 | `discount` | нет | Процент скидки (0-99) |
-| `discountedPrice` | нет | Цена со скидкой |
-| `clubDiscount` | нет | Скидка для клуба WB |
 
-**Важно:** Передавать либо `discount`, либо `discountedPrice` — не оба одновременно.
+Клубные скидки (`clubDiscount`) в это тело не входят — для них отдельный путь из авто-таблицы,
+`POST /api/v2/upload/task/club-discount`.
 
-## Пример: получить текущие цены
+## Пример: получить товары с ценами
+
+Актуальный путь по авто-таблице — `GET /api/v2/list/goods/filter`. Точный набор query-параметров
+фильтра в этом файле не задокументирован (тело — см. спеку):
 
 ```bash
-curl -X POST https://discounts-prices-api.wildberries.ru/api/v2/prices \
-  -H "Authorization: Bearer TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{ "nmIds": [123456, 789012] }'
+curl -X GET "https://discounts-prices-api.wildberries.ru/api/v2/list/goods/filter" \
+  -H "Authorization: Bearer TOKEN"
 ```
 
 ## Примечание

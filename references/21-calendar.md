@@ -39,7 +39,7 @@
 ## Пример
 
 ```bash
-curl -X GET "https://dp-calendar-api.wildberries.ru/api/v1/calendar" \
+curl -X GET "https://dp-calendar-api.wildberries.ru/api/v1/calendar/promotions" \
   -H "Authorization: Bearer TOKEN"
 ```
 

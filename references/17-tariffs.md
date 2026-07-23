@@ -47,7 +47,7 @@
 ## Пример: получить комиссии
 
 ```bash
-curl -X GET "https://common-api.wildberries.ru/api/v2/tariffs/commission" \
+curl -X GET "https://common-api.wildberries.ru/api/v1/tariffs/commission" \
   -H "Authorization: Bearer TOKEN"
 ```
 
