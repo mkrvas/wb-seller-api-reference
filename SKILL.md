@@ -2,8 +2,9 @@
 name: wb-api
 description: >
   Справочник по Wildberries Seller API — базовые хосты, авторизация, rate limits, эндпоинты
-  по 13 семействам (Content, Marketplace, Statistics, Finance, Analytics, Prices, Advertising,
-  Feedbacks, Tariffs, Chat, Returns, Documents, Calendar). Используй когда нужно
+  по 18 семействам (Content, Marketplace, Statistics, Finance, Analytics, Prices, Advertising,
+  Feedbacks, Tariffs, Chat, Returns, Documents, Calendar, Orders DBW, Orders DBS,
+  Самовывоз, WBD, Supplies FBW). Используй когда нужно
   узнать путь/параметры/лимит WB API или спроектировать интеграцию с WB.
 ---
 
@@ -49,6 +50,11 @@ description: >
 | [19-returns.md](references/19-returns.md) | Returns (возвраты) | returns-api.wildberries.ru |
 | [20-documents.md](references/20-documents.md) | Documents (счета, акты) | documents-api.wildberries.ru |
 | [21-calendar.md](references/21-calendar.md) | Promotion Calendar (акции) | dp-calendar-api.wildberries.ru |
+| [22-orders-dbw.md](references/22-orders-dbw.md) | Orders DBW (доставка силами WB) | marketplace-api.wildberries.ru |
+| [23-orders-dbs.md](references/23-orders-dbs.md) | Orders DBS (доставка продавцом) | marketplace-api.wildberries.ru |
+| [24-in-store-pickup.md](references/24-in-store-pickup.md) | Самовывоз из магазина | marketplace-api.wildberries.ru |
+| [25-wbd.md](references/25-wbd.md) | WBD (Wildberries Digital) — спека не скачана, зона пустая | не подтверждён |
+| [26-supplies-fbw.md](references/26-supplies-fbw.md) | Supplies FBW (поставки на склады WB) | supplies-api.wildberries.ru |
 
 ## Быстрый справочник
 

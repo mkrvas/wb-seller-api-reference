@@ -1,6 +1,6 @@
 # wb-seller-api-reference
 
-Неофициальный справочник по [Wildberries Seller API](https://dev.wildberries.ru/) в формате [Claude Code Skill](https://docs.claude.com/en/docs/claude-code/skills) — 5 файлов с общей инфраструктурой (авторизация, rate limits, ошибки, пагинация, асинхронные отчёты) + 13 файлов по семействам API (Content, Marketplace, Statistics, Finance, Analytics, Prices & Discounts, Advertising, Feedbacks, Tariffs, Chat, Returns, Documents, Calendar) с эндпоинтами, параметрами, лимитами и типичными граблями.
+Неофициальный справочник по [Wildberries Seller API](https://dev.wildberries.ru/) в формате [Claude Code Skill](https://docs.claude.com/en/docs/claude-code/skills) — 5 файлов с общей инфраструктурой (авторизация, rate limits, ошибки, пагинация, асинхронные отчёты) + 18 файлов по семействам API (Content, Marketplace, Statistics, Finance, Analytics, Prices & Discounts, Advertising, Feedbacks, Tariffs, Chat, Returns, Documents, Calendar, Orders DBW, Orders DBS, Самовывоз, WBD, Supplies FBW) с эндпоинтами, параметрами, лимитами и типичными граблями.
 
 ## Что это такое
 
@@ -41,13 +41,29 @@ Claude Code подхватит скилл автоматически — он с
 | [19-returns.md](references/19-returns.md) | Returns — возвраты |
 | [20-documents.md](references/20-documents.md) | Documents — счета, акты |
 | [21-calendar.md](references/21-calendar.md) | Promotion Calendar — акции |
+| [22-orders-dbw.md](references/22-orders-dbw.md) | Orders DBW — заказы с доставкой силами WB |
+| [23-orders-dbs.md](references/23-orders-dbs.md) | Orders DBS — заказы с доставкой продавцом |
+| [24-in-store-pickup.md](references/24-in-store-pickup.md) | In-Store Pickup — самовывоз из магазина |
+| [25-wbd.md](references/25-wbd.md) | WBD (Wildberries Digital) — спека не скачана, зона пустая |
+| [26-supplies-fbw.md](references/26-supplies-fbw.md) | Supplies FBW — поставки на склады WB |
+
+## Автообновление
+
+Таблицы эндпоинтов между маркерами `<!-- AUTO:BEGIN ... -->` / `<!-- AUTO:END -->`
+генерируются из официальных OpenAPI-спек `dev.wildberries.ru` (снапшот — в
+[specs/](specs/)). GitHub Actions ежедневно скачивает свежие спеки и, если WB
+что-то поменял, открывает PR с перегенерированными таблицами и списком
+изменений — мерж делает человек. Рукописные заметки (лимиты, грабли, даты
+отключений) живут вне маркеров, генератор их не касается.
+
+Обновить локальную копию скилла: `git pull` в папке скилла.
 
 ## Уровень детализации
 
 Файлы неравномерны по глубине, и это осознанно:
 
 - **Боевые** (Finance, Advertising, Statistics, Analytics) — содержат факты, проверенные живыми запросами с реальным токеном: реальные ответы API, эндпоинты, которые официальная документация не описывает или описывает неточно, конкретные даты изменений и deprecation.
-- **Справочные** (Chat, Returns, Documents, Calendar, Feedbacks, Tariffs, Prices, Content, Marketplace) — конспект официальной документации: пути, методы, параметры, без live-тестирования каждой мелочи.
+- **Справочные** (Chat, Returns, Documents, Calendar, Feedbacks, Tariffs, Prices, Content, Marketplace, Orders DBW, Orders DBS, Самовывоз, WBD, Supplies FBW) — конспект официальной документации: пути, методы, параметры, без live-тестирования каждой мелочи. WBD — особый случай: спека не скачана (см. «Автообновление»), файл пока пуст.
 
 Ориентируйтесь на это при выборе, насколько слепо доверять конкретному файлу.
 
