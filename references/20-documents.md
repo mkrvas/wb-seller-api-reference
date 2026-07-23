@@ -24,7 +24,6 @@
 |---|---|---|
 | GET | `/api/v1/documents/categories` | Категории документов |
 | GET | `/api/v1/documents/download` | Получить документ |
-| POST | `/api/v1/documents/download/all` | Получить документы |
 | GET | `/api/v1/documents/list` | Список документов |
 <!-- AUTO:END -->
 
