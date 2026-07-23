@@ -18,6 +18,7 @@
 | 401 | Unauthorized | Неправильный / отсутствующий / истёкший токен | Проверить `Authorization: Bearer`, выпустить новый токен |
 | 403 | Forbidden | Нет нужного scope в токене | Создать новый токен с нужной категорией |
 | 404 | Not Found | nmID/orderId/warehouseId не существует | Проверить ID, ресурс мог быть удалён |
+| 405 | Method Not Allowed | Метод не поддерживается этим путём — частый маркер устаревших путей | Проверить HTTP-метод и актуальность пути (см. `15-advertising.md`) |
 | 409 | Conflict | Дубликат, версия устарела | Повторить с актуальными данными |
 | 429 | Too Many Requests | Превышен rate limit | **Ретраить** — см. `01-rate-limits-retry.md` |
 
@@ -58,7 +59,7 @@
 
 ### «403 Forbidden» на конкретный эндпоинт
 - При создании токена не выбрана нужная категория (scope)
-- Например, для финотчёта нужен scope **Statistics**, для рекламы — **Promotion**
+- Например: для рекламы — scope **Promotion**; для финотчёта зависит от API — у deprecated `reportDetailByPeriod` scope **Statistics**, у актуального Finance API — scope **Finance**
 - Решение: создать новый токен с правильными scopes
 
 ### «429 Too Many Requests» постоянно

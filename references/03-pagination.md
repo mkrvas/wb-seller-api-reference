@@ -65,9 +65,9 @@ GET ...&rrdid=5000&limit=100000
 **Где:** Documents, некоторые отчёты, Feedbacks, Questions
 
 ```
-GET /api/v1/documents?limit=100&offset=0
-GET /api/v1/documents?limit=100&offset=100
-GET /api/v1/documents?limit=100&offset=200
+GET /api/v1/documents/list?limit=100&offset=0
+GET /api/v1/documents/list?limit=100&offset=100
+GET /api/v1/documents/list?limit=100&offset=200
 ```
 
 **Стоп-условие:** Пустой ответ или записей меньше `limit`.

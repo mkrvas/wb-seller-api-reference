@@ -38,16 +38,16 @@ description: >
 | Файл | Семейство | Хост |
 |---|---|---|
 | [10-content.md](references/10-content.md) | Content (карточки, медиа, справочники) | content-api.wildberries.ru |
-| [11-marketplace.md](references/11-marketplace.md) | Marketplace (FBS заказы, поставки, остатки) | marketplace-api.wildberries.ru |
+| [11-marketplace.md](references/11-marketplace.md) | Marketplace (FBS заказы, поставки, остатки продавца — не остатки WB, те в 12-statistics) | marketplace-api.wildberries.ru |
 | [12-statistics.md](references/12-statistics.md) | Statistics (остатки WB, продажи, заказы; ⚠️ финотчёт deprecated) | statistics-api.wildberries.ru |
-| [12a-finance.md](references/12a-finance.md) | **Finance (⭐ финотчёт daily/weekly, баланс, эквайринг) — ЗАМЕНА старого финотчёта** | finance-api.wildberries.ru |
-| [13-analytics.md](references/13-analytics.md) | **Analytics (воронка, платное хранение, NM-отчёты)** | seller-analytics-api.wildberries.ru |
+| [12a-finance.md](references/12a-finance.md) | **Finance (⭐ финотчёт daily/weekly, баланс, эквайринг) — ЗАМЕНА старого финотчёта** (объёмный) | finance-api.wildberries.ru |
+| [13-analytics.md](references/13-analytics.md) | **Analytics (воронка, платное хранение, NM-отчёты)** (объёмный) | seller-analytics-api.wildberries.ru |
 | [14-prices-discounts.md](references/14-prices-discounts.md) | Prices & Discounts (цены, скидки) | discounts-prices-api.wildberries.ru |
-| [15-advertising.md](references/15-advertising.md) | **Advertising (кампании, история затрат)** | advert-api.wildberries.ru |
-| [16-feedbacks.md](references/16-feedbacks.md) | Feedbacks & Questions (отзывы, вопросы) | feedbacks-api.wildberries.ru |
+| [15-advertising.md](references/15-advertising.md) | **Advertising (кампании, история затрат)** (объёмный) | advert-api.wildberries.ru |
+| [16-feedbacks.md](references/16-feedbacks.md) | Feedbacks & Questions (отзывы, вопросы) + заявки покупателей на возврат (claims) | feedbacks-api.wildberries.ru |
 | [17-tariffs.md](references/17-tariffs.md) | Tariffs (комиссии, склады, короба) | common-api.wildberries.ru |
 | [18-chat.md](references/18-chat.md) | Buyer Chat (чат с покупателями) | buyer-chat-api.wildberries.ru |
-| [19-returns.md](references/19-returns.md) | Returns (возвраты) | returns-api.wildberries.ru |
+| [19-returns.md](references/19-returns.md) | ⚠️ Returns (возвраты) — файл непроверенный; актуальная модель возвратов = claims, см. 16-feedbacks.md | returns-api.wildberries.ru |
 | [20-documents.md](references/20-documents.md) | Documents (счета, акты) | documents-api.wildberries.ru |
 | [21-calendar.md](references/21-calendar.md) | Promotion Calendar (акции) | dp-calendar-api.wildberries.ru |
 | [22-orders-dbw.md](references/22-orders-dbw.md) | Orders DBW (доставка силами WB) | marketplace-api.wildberries.ru |
@@ -69,6 +69,8 @@ description: >
 ## Критичные правила
 
 **Не выдумывать.** Если эндпоинта нет в reference-файле — говорить: «не найдено в справочнике, проверь https://dev.wildberries.ru».
+
+**Свежесть.** Справочник обновляется из OpenAPI-спек через PR, которые мержит человек, — файлы могут отставать от реального API. При использовании в продакшене сверяйся с https://dev.wildberries.ru и датой снапшота в `specs/`.
 
 **Для любой интеграции** обязательно читать:
 - `01-rate-limits-retry.md` — лимиты и стратегия ретраев

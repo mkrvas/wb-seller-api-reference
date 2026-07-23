@@ -1,13 +1,11 @@
 # Promotion Calendar API — Календарь акций
 
-> ⚠️ **Критично устарело — требует ручной проверки** (аудит от 2026-07-21, не подтверждено по
-> первоисточнику): пути `GET /api/v1/calendar`, `GET /api/v1/calendar/{id}`,
-> `POST /api/v1/calendar/{id}/actions` ниже не нашлись в независимых источниках. Вероятные актуальные
-> пути — все под префиксом `/api/v1/calendar/promotions/...`: `GET /api/v1/calendar/promotions`
-> (список акций), `GET /api/v1/calendar/promotions/details` (детали),
-> `GET /api/v1/calendar/promotions/nomenclatures` (товары для участия),
-> `POST /api/v1/calendar/promotions/upload` (добавить товар в акцию). Не бери пути ниже на веру —
-> сверь вживую перед интеграцией.
+> ⚠️ **Пути подтверждены официальной спекой** (снапшот в `specs/`, авто-таблица ниже): актуальные — все
+> под префиксом `/api/v1/calendar/promotions/*` (`promotions` — список акций, `/details` — детали,
+> `/nomenclatures` — товары для участия, `POST /api/v1/calendar/promotions/upload` — добавить товар).
+> Прежние плоские `GET /api/v1/calendar`, `GET /api/v1/calendar/{id}`,
+> `POST /api/v1/calendar/{id}/actions` в спеке отсутствуют — заменены. Непроверенными по первоисточнику
+> остаются поля тел запросов и лимиты (аудит от 2026-07-21).
 
 ## Назначение
 

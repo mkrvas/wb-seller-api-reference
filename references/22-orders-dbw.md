@@ -20,7 +20,7 @@ DBW (Доставка курьером WB) — модель, при которо
 > Хост подтверждён per-path записями `servers:` в спеке 04-orders-dbw; корневого
 > поля `servers` в спеке нет, поэтому `--list` показывает пустой список. Совпадает
 > с `00-overview.md` (`Marketplace → marketplace-api.wildberries.ru`) и с путями
-> семейства FBS (`11-marketplace.md`) и Самовывоз (`06-in-store-pickup`).
+> семейства FBS (`11-marketplace.md`) и Самовывоз (`24-in-store-pickup.md`).
 
 ## Эндпоинты
 

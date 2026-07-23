@@ -95,9 +95,11 @@ NM-отчёты по товарам, **воронка продаж** (заказ
 > в спеке отсутствует — проверь вживую.
 >
 > **Асинхронные отчёты** (создать → статус → скачать по `task_id`, workflow — см. `04-async-tasks.md`):
-> платное хранение (`/api/v1/paid_storage`), приёмка (`/api/v1/acceptance_report`), остатки на складах
-> (`/api/v1/warehouse_remains`), доля бренда, самовыкупы. Готовый отчёт хранения живёт 2 часа,
-> данные — за последние 90 дней; формат — CSV в ZIP.
+> платное хранение (`GET /api/v1/paid_storage`), приёмка (`GET /api/v1/acceptance_report`), остатки на
+> складах (`GET /api/v1/warehouse_remains`). Создающий запрос — **GET** (в старой документации был POST).
+> Готовый отчёт хранения живёт 2 часа, данные — за последние 90 дней; формат — CSV в ZIP.
+> Доля бренда и самовыкупы — **синхронные** `GET` (не async): `GET /api/v1/analytics/brand-share`,
+> `GET /api/v1/analytics/antifraud-details`.
 >
 > **Доля бренда:** в спеке — `GET /api/v1/analytics/brand-share` (+ `/brands`, `/parent-subjects`).
 > Прежний справочник указывал **асинхронный** `POST /api/v2/brands/report-downloads` — **заменён** на brand-share.
@@ -234,10 +236,8 @@ curl -X POST "https://seller-analytics-api.wildberries.ru/api/analytics/v3/sales
 ### Создание задачи
 
 ```bash
-curl -X POST https://seller-analytics-api.wildberries.ru/api/v1/paid_storage \
-  -H "Authorization: Bearer TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{ "dateFrom": "2024-06-01", "dateTo": "2024-06-07" }'
+curl -X GET "https://seller-analytics-api.wildberries.ru/api/v1/paid_storage?dateFrom=2024-06-01&dateTo=2024-06-07" \
+  -H "Authorization: Bearer TOKEN"
 ```
 
 ### Скачанный отчёт (CSV)

@@ -6,38 +6,30 @@
 
 | Отчёт | Create | Status | Download |
 |---|---|---|---|
-| **Платное хранение** | `POST /api/v1/paid_storage` | `GET /api/v1/paid_storage/tasks/{taskId}/status` | `GET /api/v1/paid_storage/tasks/{taskId}/download` |
-| **Приёмка** | `POST /api/v1/acceptance_report` | `GET /api/v1/acceptance_report/tasks/{taskId}/status` | `GET /api/v1/acceptance_report/tasks/{taskId}/download` |
-| **NM-отчёты** | `POST /api/v2/nm-report/downloads` | `GET /api/v2/nm-report/downloads/{taskId}` ⚠️ | `GET /api/v2/nm-report/downloads/{taskId}/file` ⚠️ |
-| **Доля бренда** | `POST /api/v2/brands/report-downloads` ⚠️ | `GET /api/v2/brands/report-downloads/{taskId}` ⚠️ | `GET /api/v2/brands/report-downloads/{taskId}/file` ⚠️ |
-| **Заблокированные товары** | `POST /api/v1/banned-products` ⚠️ | `GET /api/v1/banned-products/tasks/{taskId}/status` ⚠️ | `GET /api/v1/banned-products/tasks/{taskId}/download` ⚠️ |
+| **Платное хранение** | `GET /api/v1/paid_storage` *(в старой документации был POST)* | `GET /api/v1/paid_storage/tasks/{taskId}/status` | `GET /api/v1/paid_storage/tasks/{taskId}/download` |
+| **Приёмка** | `GET /api/v1/acceptance_report` *(в старой документации был POST)* | `GET /api/v1/acceptance_report/tasks/{taskId}/status` | `GET /api/v1/acceptance_report/tasks/{taskId}/download` |
+| **NM-отчёты** | `POST /api/v2/nm-report/downloads` | `GET /api/v2/nm-report/downloads` (список/статус) | `GET /api/v2/nm-report/downloads/file/{downloadId}` |
+| **Остатки на складах** | `GET /api/v1/warehouse_remains` | `GET /api/v1/warehouse_remains/tasks/{taskId}/status` | `GET /api/v1/warehouse_remains/tasks/{taskId}/download` |
 
 Все на хосте `seller-analytics-api.wildberries.ru`.
 
-> ⚠️ **Требует ручной проверки** (аудит от 2026-07-21, не подтверждено по первоисточнику):
-> - **Доля бренда** и **Заблокированные товары** — по двум независимым сторонним источникам это,
->   похоже, на самом деле **синхронные `GET`-эндпоинты**, а не async task-flow: доля бренда —
->   `GET /api/v1/analytics/brand-share`, `/brand-share/brands`, `/brand-share/parent-subjects`;
->   заблокированные товары — `GET /api/v1/analytics/banned-products/blocked` и `/shadowed`.
-> - **NM-отчёты** — пути статуса/скачивания могли измениться: возможно статус проверяется через
->   `GET /api/v2/nm-report/downloads` (список, без `{taskId}`), а скачивание — через
->   `GET /api/v2/nm-report/downloads/file/{downloadId}`; статусы могут быть `SUCCESS`/`FAILED`, а не
->   `done`/`failed`; retention — возможно 48 часов, а не 2. Есть также вероятный неупомянутый метод
->   `POST /api/v2/nm-report/downloads/retry`.
-> - Отдельно есть сигнал о существовании **ещё одного async-отчёта — "Остатки на складах"**
->   (`warehouse_remains`): `POST /api/v1/warehouse_remains` → `GET .../tasks/{taskId}/status` →
->   `GET .../tasks/{taskId}/download`, не упомянутого в таблице выше (это не то же самое, что
->   синхронный `stocks-report/wb-warehouses` из `03-pagination.md`).
+> **Доля бренда** и **заблокированные товары** — это **НЕ** async task-flow, а **синхронные `GET`**:
+> доля бренда — `GET /api/v1/analytics/brand-share` (+ `/brands`, `/parent-subjects`); заблокированные
+> товары — `GET /api/v1/analytics/banned-products/blocked` (и `/shadowed`). Прежний справочник ошибочно
+> описывал их как async — см. `13-analytics.md`.
+>
+> **Обновлено по спеке** (снапшот в `specs/`): пути NM-отчётов и async-семейства приведены к спеке;
+> create-запросы платного хранения/приёмки/остатков — **GET** (в старой документации был POST). Прежние
+> формы (async `brands/report-downloads`, `banned-products` как task-flow, статус NM по `{taskId}`) —
+> см. git-историю. По NM-отчётам детали статусов/retry — в `13-analytics.md`.
 
 ## Workflow: 3 шага
 
 ### Шаг 1. Создать задачу
 
 ```bash
-curl -X POST https://seller-analytics-api.wildberries.ru/api/v1/paid_storage \
-  -H "Authorization: Bearer TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{ "dateFrom": "2024-06-01", "dateTo": "2024-06-30" }'
+curl -X GET "https://seller-analytics-api.wildberries.ru/api/v1/paid_storage?dateFrom=2024-06-01&dateTo=2024-06-30" \
+  -H "Authorization: Bearer TOKEN"
 ```
 
 Ответ:

@@ -10,9 +10,9 @@
 | **Finance (Финансы)** ⭐ | `finance-api.wildberries.ru` | /api/finance/v1/ |
 | Analytics (Аналитика) | `seller-analytics-api.wildberries.ru` | /api/v1/, /api/v2/, /api/v3/ |
 | Prices & Discounts | `discounts-prices-api.wildberries.ru` | /api/v1/, /api/v2/ |
-| Advertising (Реклама) | `advert-api.wildberries.ru` | /adv/v1/, /adv/v2/ |
+| Advertising (Реклама) | `advert-api.wildberries.ru` | /adv/v1/, /adv/v2/, /adv/v3/, /api/advert/v1|v2/ |
 | Feedbacks & Questions | `feedbacks-api.wildberries.ru` | /api/v1/ |
-| Tariffs (Тарифы) | `common-api.wildberries.ru` | /api/v2/ |
+| Tariffs (Тарифы) | `common-api.wildberries.ru` | /api/v1/ (+ /api/tariffs/v1/acceptance/coefficients) |
 | Common (Общее) | `common-api.wildberries.ru` | /api/v1/ |
 | Buyer Chat | `buyer-chat-api.wildberries.ru` | /api/v1/ |
 | Returns (Возвраты) | `returns-api.wildberries.ru` | /api/v1/ |
@@ -22,6 +22,12 @@
 | Recommendations | `recommend-api.wildberries.ru` | /api/v1/ |
 
 Все хосты работают по HTTPS.
+
+> **Common и Recommendations — отдельного файла-семейства в справочнике нет.** Общие эндпоинты
+> (`ping`, `seller-info`, `news`, `users`, рейтинг, подписки и т.п.; спека `01-general`) —
+> инфраструктурные: в отдельный reference-файл не вынесены, таблиц эндпоинтов по ним справочник не
+> содержит (см. спеку `01-general` на портале). Рекомендации (`/api/content/v1/recommendations/*`)
+> живут в [10-content.md](10-content.md) (спека `02-items`).
 
 ## Авторизация
 

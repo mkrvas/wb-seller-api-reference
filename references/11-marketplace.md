@@ -130,8 +130,10 @@ curl -X GET "https://marketplace-api.wildberries.ru/api/v3/orders?limit=50&offse
 > - `GET /api/v3/orders/{id}` и `PATCH /api/v3/orders/{id}` — существование именно в такой обобщённой
 >   форме под вопросом; статус, похоже, меняется пакетно через `POST /api/v3/orders/status`
 > - `GET /api/v3/orders/dbs` — вероятно должно быть `GET /api/v3/dbs/orders`
-> - `PATCH /api/v3/supplies/{id}/close` — вероятно должно быть `POST /api/v3/supplies/{id}/deliver`
-> - `PATCH /api/v3/warehouses/{id}` — HTTP-метод под вопросом (возможно `PUT` или `POST`)
+> - ✅ **разрешено спекой:** «закрыть поставку» — это `PATCH /api/v3/supplies/{supplyId}/deliver`
+>   (не `POST`, и не старый `.../close`); см. примечание к авто-таблице выше
+> - ✅ **разрешено спекой:** обновление склада — `PUT /api/v3/warehouses/{warehouseId}`
+>   (не `PATCH`/`POST`); см. примечание к авто-таблице выше
 > - `POST /api/v3/stocks` без `{warehouseId}` — вероятная ошибка/дубль в таблице
 > - Точная стоимость 409 Conflict (5 vs 10) — источники противоречат друг другу
 > - Не упомянута новая модель заказов **DBW**, появившаяся в 2025

@@ -4,18 +4,19 @@
 
 | Семейство | Лимит | Примечания |
 |---|---|---|
-| **Content** | 100 запр/мин | `/cards/upload`, `/cards/update`, `/cards/upload/add`: 10 запр/мин |
+| **Content** | 100 запр/мин | ⚠️ источники расходятся: встречается и отдельный суб-лимит 10 запр/мин на `/cards/upload`, `/cards/update`, `/cards/upload/add`, и утверждение об общем лимите на все Content-методы; вживую не проверено (см. `10-content.md`) |
 | **Marketplace** | 300 запр/мин | 409 = 5 запросов; 409 для DBS = 10 запросов |
 | **Statistics** | **1 запр/мин** | `reportDetailByPeriod` — самый жёсткий лимит (⚠️ deprecated, отключается с 15.07.2026 — замена Finance API) |
 | **Statistics (stocks)** | 3 запр / 30 сек | `/api/v1/supplier/stocks` |
 | **Finance** ⭐ | **1 запр/мин** | Все эндпоинты семейства (sales-reports, acquiring, balance) |
 | **Analytics** | зависит от метода | NM-отчёты: 10 запр/10 мин; воронка `/api/analytics/v3/sales-funnel/...`: 3 запр/мин |
 | **Prices & Discounts** | 10 запр / 6 сек | ~100 запр/мин, равномерно распределять |
-| **Advertising** | 10-100 запр/мин | зависит от конкретного метода |
+| **Advertising** | до ~10 запр/сек (≈600/мин) | по наблюдениям; WB официально не публикует — см. `15-advertising.md` |
 | **Feedbacks** | 100 запр/мин | |
-| **Tariffs (commission)** | 1 запр/мин | `/api/v2/tariffs/commission` |
-| **Tariffs (warehouse)** | 60 запр/мин | `/api/v2/tariffs/warehouse-coefficients` |
+| **Tariffs (commission)** | 1 запр/мин | `/api/v1/tariffs/commission` |
+| **Tariffs (приёмка)** | 60 запр/мин | `/api/tariffs/v1/acceptance/coefficients` (по вторичному источнику мог снизиться до 6/мин с 27.06.2026 — см. `17-tariffs.md`) |
 | **Calendar** | 10 запр / 6 сек | ~100 запр/мин |
+| **Documents** | ⚠️ противоречиво | заявлено 3 запр/30 сек либо 1 запр/10 сек — не подтверждено (см. `20-documents.md`) |
 | **Common** | 3 запр / 30 сек | ~6 запр/мин для некоторых методов |
 
 ## Заголовки Rate Limit в ответах
