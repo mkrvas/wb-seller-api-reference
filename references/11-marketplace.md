@@ -15,6 +15,11 @@ FBS заказы (сборочные задания), поставки, упра
 | Метод | Путь | Назначение |
 |---|---|---|
 | GET | `/api/marketplace/v3/fbs/orders/archive` | Получить список архивных сборочных заданий |
+| GET | `/api/marketplace/v3/fbs/settings/autoreturns` | Получить настройки автовозврата продавца |
+| PATCH | `/api/marketplace/v3/fbs/settings/autoreturns` | Обновить настройки автовозврата продавца |
+| PATCH | `/api/marketplace/v3/fbs/settings/autoreturns/items` | Обновить настройки автовозврата товаров |
+| POST | `/api/marketplace/v3/fbs/settings/autoreturns/items` | Получить настройки автовозврата товаров |
+| GET | `/api/marketplace/v3/fbs/settings/autoreturns/subcategories/restricted` | Получить предметы, которые не хранятся на складах WB |
 | POST | `/api/marketplace/v3/orders/meta` | Получить идентификаторы маркировки сборочных заданий |
 | PUT | `/api/marketplace/v3/orders/{orderId}/meta/customs-declaration` | Закрепить номер ДТ за сборочным заданием |
 | GET | `/api/marketplace/v3/supplies/{supplyId}/order-ids` | Получить ID сборочных заданий поставки |
