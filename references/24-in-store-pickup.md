@@ -29,7 +29,6 @@
 | POST | `/api/marketplace/v3/click-collect/orders/meta/details` | Получить идентификаторы маркировки сборочных заданий |
 | POST | `/api/marketplace/v3/click-collect/orders/meta/gtin` | Закрепить GTIN за сборочными заданиями |
 | POST | `/api/marketplace/v3/click-collect/orders/meta/imei` | Закрепить IMEI за сборочными заданиями |
-| POST | `/api/marketplace/v3/click-collect/orders/meta/info` | Получить идентификаторы маркировки сборочных заданий ⚠️ deprecated |
 | POST | `/api/marketplace/v3/click-collect/orders/meta/sgtin` | Закрепить коды маркировки Честного знака за сборочными заданиями |
 | POST | `/api/marketplace/v3/click-collect/orders/meta/uin` | Закрепить УИН за сборочными заданиями |
 | POST | `/api/marketplace/v3/click-collect/orders/status/cancel` | Отменить сборочные задания |
