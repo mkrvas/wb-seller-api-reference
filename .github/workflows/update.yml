@@ -22,9 +22,12 @@ jobs:
         run: |
           pip install -q requests pyyaml playwright
           python -m playwright install --with-deps chromium
+          sudo apt-get install -y xvfb
 
+      # Анти-бот WBaaS отдаёт 498 всем, кроме headed-браузера (замер 2026-08-10,
+      # подробности в шапке fetch_specs.py) — отсюда виртуальный дисплей.
       - name: Скачивание спек (all-or-nothing)
-        run: python scripts/fetch_specs.py --out specs
+        run: xvfb-run -a python scripts/fetch_specs.py --out specs
 
       - name: Перегенерация авто-зон
         run: python scripts/generate_tables.py
