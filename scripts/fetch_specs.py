@@ -34,7 +34,8 @@ HEADERS = {
 
 CHALLENGE_TIMEOUT_S = 90     # сколько ждём прохождения челленджа на одной странице
 CHALLENGE_POLL_S = 2         # шаг опроса содержимого страницы
-ATTEMPTS = 3                 # попыток на спеку (каждая — новая вкладка)
+ATTEMPTS = 3                 # попыток на спеку
+MIN_SIZE_RATIO = 0.7         # ниже этой доли от прошлого размера считаем обрезкой
 
 
 def load_mapping(path="scripts/mapping.yaml"):
@@ -66,15 +67,26 @@ def fetch_http(url):
 
 
 class SpecBrowser:
-    """Headed-Chromium с общим контекстом на все спеки.
+    """Headed-Chromium с общей вкладкой на все спеки.
 
     Ленивый: браузер поднимается только когда HTTP-ступень не справилась.
+
+    Тело спеки берётся НЕ из DOM, а через `fetch()` внутри страницы. Читать
+    отрендеренный `<pre>` нельзя: для крупных спек рендер отстаёт от загрузки,
+    и текст обрывается на полуслове. YAML при этом остаётся синтаксически
+    валидным (обрыв попадает внутрь многострочного скаляра), `paths` на месте,
+    и is_valid_spec такой огрызок пропускает — 01-general так похудела с 1742
+    строк до 1007, потеряв components.examples и components.responses.
+    Вкладка нужна ровно для одного: пройти челлендж и получить куку, дальше
+    работает сетевой стек браузера.
     """
 
     def __init__(self):
         self._pw = None
         self._browser = None
         self._ctx = None
+        self._page = None
+        self._warm = False
 
     def _ensure(self):
         if self._ctx is not None:
@@ -86,42 +98,52 @@ class SpecBrowser:
         self._ctx = self._browser.new_context(
             user_agent=HEADERS["User-Agent"], locale="ru-RU"
         )
+        self._page = self._ctx.new_page()
 
-    @staticmethod
-    def _page_text(page):
-        try:
-            return page.inner_text("pre")
-        except Exception:
+    def _fetch_in_page(self, url):
+        """Скачать URL сетевым стеком браузера, минуя рендеринг."""
+        return self._page.evaluate(
+            """async (u) => {
+                const r = await fetch(u, {credentials: 'include'});
+                return {status: r.status, body: await r.text()};
+            }""",
+            url,
+        )
+
+    def _pass_challenge(self, url):
+        """Открыть URL вкладкой и дождаться, пока анти-бот пропустит."""
+        self._page.goto(url, wait_until="domcontentloaded", timeout=90_000)
+        deadline = time.monotonic() + CHALLENGE_TIMEOUT_S
+        while time.monotonic() < deadline:
+            self._page.wait_for_timeout(CHALLENGE_POLL_S * 1000)
             try:
-                return page.inner_text("body")
+                if self._fetch_in_page(url)["status"] == 200:
+                    self._warm = True
+                    return True
             except Exception:
-                return ""
+                continue    # страница ещё на челлендже — fetch оттуда не живёт
+        return False
 
     def fetch(self, url):
         self._ensure()
         for attempt in range(1, ATTEMPTS + 1):
-            page = self._ctx.new_page()
             try:
-                resp = page.goto(url, wait_until="domcontentloaded", timeout=90_000)
-                status = resp.status if resp else None
-                deadline = time.monotonic() + CHALLENGE_TIMEOUT_S
-                text = ""
-                while time.monotonic() < deadline:
-                    text = self._page_text(page)
-                    if is_valid_spec(text):
-                        if attempt > 1 or status != 200:
-                            print(f"  playwright: ок (попытка {attempt}, "
-                                  f"первый статус {status})", file=sys.stderr)
-                        return text
-                    page.wait_for_timeout(CHALLENGE_POLL_S * 1000)
-                head = " | ".join(text.split("\n"))[:160]
-                print(f"  playwright: попытка {attempt}/{ATTEMPTS} не прошла "
-                      f"(статус {status}), на странице: {head!r}", file=sys.stderr)
+                if not self._warm and not self._pass_challenge(url):
+                    print(f"  playwright: попытка {attempt}/{ATTEMPTS} — "
+                          f"челлендж не пройден за {CHALLENGE_TIMEOUT_S} с",
+                          file=sys.stderr)
+                    continue
+                r = self._fetch_in_page(url)
+                if r["status"] == 200 and is_valid_spec(r["body"]):
+                    return r["body"]
+                print(f"  playwright: попытка {attempt}/{ATTEMPTS} — статус "
+                      f"{r['status']}, {len(r['body'])} байт, начало "
+                      f"{r['body'][:80]!r}", file=sys.stderr)
+                self._warm = False   # куку могли отозвать — идём за новой
             except Exception as e:
                 print(f"  playwright: попытка {attempt}/{ATTEMPTS} — "
                       f"{type(e).__name__}: {e}", file=sys.stderr)
-            finally:
-                page.close()
+                self._warm = False
         return None
 
     def close(self):
@@ -132,6 +154,26 @@ class SpecBrowser:
                 except Exception:
                     pass
         self._pw = self._browser = self._ctx = None
+
+
+def shrink_error(name, text, out_dir):
+    """Спека резко похудела — вероятнее обрезка при скачивании, чем правка WB.
+
+    is_valid_spec такое не ловит: обрыв внутри многострочного скаляра оставляет
+    YAML синтаксически валидным и с `paths` на месте. Молча записать огрызок
+    в справочник хуже, чем упасть.
+    """
+    prev = out_dir / f"{name}.yaml"
+    if not prev.exists():
+        return None
+    old = len(prev.read_text(encoding="utf-8"))
+    new = len(text)
+    if old and new < old * MIN_SIZE_RATIO:
+        return (f"ОШИБКА: {name} ужалась {old} -> {new} символов "
+                f"(порог {MIN_SIZE_RATIO:.0%}) — похоже на обрезку при "
+                f"скачивании. Если WB действительно урезал спеку, обнови "
+                f"specs/{name}.yaml вручную.")
+    return None
 
 
 def fetch_one(url, browser):
@@ -164,6 +206,9 @@ def main():
             text = fetch_one(url, browser)
             if text is None:
                 sys.exit(f"ОШИБКА: {name} не скачалась или невалидна — {args.out}/ не тронут")
+            err = shrink_error(name, text, Path(args.out))
+            if err:
+                sys.exit(f"{err} {args.out}/ не тронут")
             (tmp / f"{name}.yaml").write_text(text, encoding="utf-8", newline="\n")
             time.sleep(1)
     finally:
