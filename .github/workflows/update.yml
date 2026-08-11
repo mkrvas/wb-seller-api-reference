@@ -34,12 +34,18 @@ jobs:
         shell: powershell   # на раннере Windows PowerShell 5.1, pwsh не установлен
         run: python scripts/generate_tables.py
 
+      # bash.exe лежит в Git\bin, которого в PATH раннера нет. Шаг ниже оставлен
+      # на bash намеренно: check_drift.py печатает markdown по-русски, и прогон
+      # его вывода через PowerShell 5.1 поехал бы по кодировкам консоли.
+      # Путь через GITHUB_PATH, а не через `shell: C:\Program Files\...` —
+      # Actions режет строку shell по пробелам и спотыкается о «Program Files».
+      - name: Git Bash в PATH
+        shell: powershell
+        run: Add-Content -Path $env:GITHUB_PATH -Value "C:\Program Files\Git\bin"
+
       - name: Дифф и описание PR
         id: drift
-        # Git Bash по полному пути: в PATH раннера его нет, а переписывать шаг
-        # на PowerShell 5.1 нельзя — check_drift.py печатает markdown по-русски,
-        # и вывод поедет по кодировкам консоли.
-        shell: 'C:\Program Files\Git\bin\bash.exe -e {0}'
+        shell: bash
         run: |
           python scripts/check_drift.py > pr_body.md
           if git diff --quiet; then
