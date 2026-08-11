@@ -40,7 +40,6 @@ DBW (Доставка курьером WB) — модель, при которо
 | POST | `/api/v3/dbw/orders/stickers` | Получить стикеры сборочных заданий |
 | PATCH | `/api/v3/dbw/orders/{orderId}/cancel` | Отменить сборочное задание |
 | PATCH | `/api/v3/dbw/orders/{orderId}/confirm` | Перевести на сборку |
-| GET | `/api/v3/dbw/orders/{orderId}/meta` | Получить идентификаторы маркировки сборочного задания ⚠️ deprecated |
 | PUT | `/api/v3/dbw/orders/{orderId}/meta/gtin` | Закрепить GTIN за сборочным заданием |
 | PUT | `/api/v3/dbw/orders/{orderId}/meta/imei` | Закрепить IMEI за сборочным заданием |
 | PUT | `/api/v3/dbw/orders/{orderId}/meta/uin` | Закрепить УИН за сборочным заданием |

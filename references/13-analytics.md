@@ -29,6 +29,7 @@ NM-отчёты по товарам, **воронка продаж** (заказ
 | Метод | Путь | Назначение |
 |---|---|---|
 | POST | `/api/analytics/v1/item-rating` | Получить отчёт ⚠️ deprecated |
+| POST | `/api/analytics/v1/order-feed` | Получить отчёт |
 | POST | `/api/analytics/v1/stocks-report/wb-warehouses` | Остатки на складах WB |
 | POST | `/api/analytics/v2/item-rating` | Получить отчёт |
 | POST | `/api/analytics/v3/sales-funnel/grouped/history` | Статистика групп карточек товаров по дням |

@@ -29,12 +29,12 @@ DBS (Delivery by Seller) — модель, при которой продаве�
 | Метод | Путь | Назначение |
 |---|---|---|
 | POST | `/api/marketplace/v3/dbs/orders/b2b/info` | Информация о покупателе B2B |
+| POST | `/api/marketplace/v3/dbs/orders/final-price` | Получить цены продавца и суммы к оплате |
 | POST | `/api/marketplace/v3/dbs/orders/meta/customs-declaration` | Закрепить номера ДТ за сборочными заданиями |
 | POST | `/api/marketplace/v3/dbs/orders/meta/delete` | Удалить идентификаторы маркировки сборочных заданий |
 | POST | `/api/marketplace/v3/dbs/orders/meta/details` | Получить идентификаторы маркировки сборочных заданий |
 | POST | `/api/marketplace/v3/dbs/orders/meta/gtin` | Закрепить GTIN за сборочными заданиями |
 | POST | `/api/marketplace/v3/dbs/orders/meta/imei` | Закрепить IMEI за сборочными заданиями |
-| POST | `/api/marketplace/v3/dbs/orders/meta/info` | Получить идентификаторы маркировки сборочных заданий ⚠️ deprecated |
 | POST | `/api/marketplace/v3/dbs/orders/meta/sgtin` | Закрепить коды маркировки Честного знака за сборочными заданиями |
 | POST | `/api/marketplace/v3/dbs/orders/meta/uin` | Закрепить УИН за сборочными заданиями |
 | POST | `/api/marketplace/v3/dbs/orders/status/cancel` | Отменить сборочные задания |
