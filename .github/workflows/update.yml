@@ -1,7 +1,11 @@
 name: update-specs
+# Расписания нет намеренно. WBaaS (анти-бот WB) с ~06.08.2026 режет портал
+# документации по репутации IP: с датацентрового адреса челлендж не проходит
+# НИКАКОЙ браузер (замер 2026-08-11, раннер GitHub 20.106.182.192 — три
+# попытки headed под xvfb, все «Подозрительная активность»). Поэтому job
+# исполняется на self-hosted раннере с домашним адресом, а раз он живёт не
+# круглосуточно — запуск только руками.
 on:
-  schedule:
-    - cron: "30 3 * * *"   # ежедневно 03:30 UTC
   workflow_dispatch:
 
 permissions:
@@ -10,27 +14,38 @@ permissions:
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, wb-specs]
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
       - name: Установка зависимостей
+        shell: powershell   # на раннере Windows PowerShell 5.1, pwsh не установлен
         run: |
-          pip install -q requests pyyaml playwright
-          python -m playwright install --with-deps chromium
+          python -m pip install -q requests pyyaml playwright
+          python -m playwright install chromium
 
+      # Браузер headed (см. шапку fetch_specs.py) — на время работы
+      # на экране появится окно Chromium, это ожидаемо.
       - name: Скачивание спек (all-or-nothing)
+        shell: powershell   # на раннере Windows PowerShell 5.1, pwsh не установлен
         run: python scripts/fetch_specs.py --out specs
 
       - name: Перегенерация авто-зон
+        shell: powershell   # на раннере Windows PowerShell 5.1, pwsh не установлен
         run: python scripts/generate_tables.py
+
+      # bash.exe лежит в Git\bin, которого в PATH раннера нет. Шаг ниже оставлен
+      # на bash намеренно: check_drift.py печатает markdown по-русски, и прогон
+      # его вывода через PowerShell 5.1 поехал бы по кодировкам консоли.
+      # Путь через GITHUB_PATH, а не через `shell: C:\Program Files\...` —
+      # Actions режет строку shell по пробелам и спотыкается о «Program Files».
+      - name: Git Bash в PATH
+        shell: powershell
+        run: Add-Content -Path $env:GITHUB_PATH -Value "C:\Program Files\Git\bin"
 
       - name: Дифф и описание PR
         id: drift
+        shell: bash
         run: |
           python scripts/check_drift.py > pr_body.md
           if git diff --quiet; then
