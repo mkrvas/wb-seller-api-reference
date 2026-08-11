@@ -11,11 +11,23 @@
 >
 > Новый путь: `POST /api/finance/v1/sales-reports/list` → `POST /api/finance/v1/sales-reports/detailed/{reportId}` на хосте `finance-api.wildberries.ru`.
 >
-> Остальные эндпоинты Statistics API (stocks, orders, sales, incomes) — по независимой перепроверке
-> одного аудита подтверждены актуальными; другой аудит (по инфраструктурным файлам скилла) нашёл
-> сигнал, что именно `stocks` мог быть заменён 23.06.2026 на `POST /api/analytics/v1/stocks-report/wb-warehouses`
-> (Analytics API). Источники противоречат друг другу и оба — вторичные (не сам dev.wildberries.ru).
-> ⚠️ Проверь вручную, прежде чем полагаться на `stocks` в новой интеграции.
+> ## ⚠️ `supplier/stocks` ОТКЛЮЧЁН 14.07.2026 (подтверждено live 2026-07-23)
+>
+> `GET /api/v1/supplier/stocks` **мёртв**: авторизованный запрос возвращает 404 с телом
+> `"title": "disabled, PLUG-404-20260720"`, detail → https://dev.wildberries.ru/release-notes?id=494.
+> Хронология: анонс замены 23.03.2026 (план отключения 23.06), фактическое отключение 14.07.2026
+> (TG-канал wb_api_notifications, ~№434); перед смертью эндпоинт неделями отдавал 429 с растущим
+> Retry-After (soft-throttling) — это НЕ бан за превышение лимита. Неавторизованный запрос по-прежнему
+> отдаёт 401 от auth-гейта (`s2s-api-auth-stat`) — существование метода нельзя проверять без токена.
+>
+> **Замена (проверена live с токеном, 200 OK):** `POST /api/analytics/v1/stocks-report/wb-warehouses`
+> на хосте `seller-analytics-api.wildberries.ru`, скоуп токена «Аналитика». Лимит 1 запр/20 сек —
+> **по IP, а не по кабинету** (live 2026-08-08: четыре разных токена упирались в общий лимит,
+> параллелить по кабинетам бесполезно). До 250 000 строк, пагинация offset. Ответ per (nmId × chrtId × warehouseId): warehouseName,
+> regionName, quantity, inWayToClient, inWayFromClient. Отличия от старого: НЕТ techSize (вместо него
+> chrtId), НЕТ quantityFull, НЕТ isSupply/isRealization.
+>
+> Остальные эндпоинты Statistics API (orders, sales, incomes) — живы (orders/sales подтверждены live 2026-07-23).
 
 ## Назначение
 
@@ -30,10 +42,23 @@
 | Эндпоинт | Лимит |
 |---|---|
 | `/api/v5/supplier/reportDetailByPeriod` ⚠️ deprecated | 1 запр/мин |
-| `/api/v1/supplier/stocks` | 3 запр / 30 сек |
-| `/api/v1/supplier/orders` | 1 запр/мин |
-| `/api/v1/supplier/sales` | 1 запр/мин |
+| `/api/v1/supplier/stocks` ⚠️ отключён 14.07.2026 | 3 запр / 30 сек |
+| `/api/v1/supplier/orders` | ⚠️ по доке 1 запр/мин, фактически больше — см. ниже |
+| `/api/v1/supplier/sales` | по доке 1 запр/мин; live не проверялся (у соседнего `/orders` бакет оказался больше) |
 | `/api/v1/supplier/incomes` | 1 запр/мин |
+
+> **Live-проверка 2026-08-08** (прод AutoReport, реальные токены, 4 кабинета):
+> в доке заявлено **1 запр/мин**, но `/api/v1/supplier/orders` отдал
+> `x-ratelimit-remaining: 7` и `8` на двух разных кабинетах — то есть фактический
+> бакет **больше единицы**. **Точный размер не замерен** — планировать частоту по
+> нему нельзя, ориентироваться на живой `x-ratelimit-remaining`.
+>
+> Заголовков `X-Ratelimit-Limit` и `X-Ratelimit-Reset` в ответе **нет** — приходит
+> только `x-ratelimit-remaining`. Подробности — `01-rate-limits-retry.md`.
+>
+> Квота считается по токену, но у шлюза есть отдельный лимит по IP: четыре запроса
+> с четырьмя разными токенами в одну миллисекунду → четвёртый получает 429; те же
+> четыре с разносом 2 секунды проходят все.
 
 ## Эндпоинты
 
@@ -56,7 +81,8 @@
 >   `POST /api/analytics/v1/stocks-report/wb-warehouses` (Analytics API) — проверь вживую. Разбор ниже.
 > - `GET /api/v1/supplier/incomes` — поставки товара на склады WB (параметры `dateFrom`, `dateTo`;
 >   лимит 1 запр/мин).
-> - `supplier/orders` и `supplier/sales` дополнительно разобраны в разделах ниже (лимит 1 запр/мин каждый).
+> - `supplier/orders` и `supplier/sales` дополнительно разобраны в разделах ниже (по доке 1 запр/мин
+>   каждый, но live-проверка 2026-08-08 показала у `/orders` бакет больше — см. «Rate limits» выше).
 
 ---
 
@@ -186,7 +212,10 @@ GET /api/v5/supplier/reportDetailByPeriod
 
 ---
 
-## stocks — Остатки на складах WB
+## stocks — Остатки на складах WB (⚠️ ОТКЛЮЧЁН 14.07.2026)
+
+> **МЁРТВ.** Возвращает 404 `PLUG-404-20260720`. Замена — `POST /api/analytics/v1/stocks-report/wb-warehouses`
+> (см. warning в шапке файла). Описание ниже оставлено для понимания старых данных/кода.
 
 Заменяет ручную выгрузку `report_*.xlsx`.
 
@@ -223,7 +252,12 @@ curl -X GET "https://statistics-api.wildberries.ru/api/v1/supplier/orders?dateFr
   -H "Authorization: Bearer TOKEN"
 ```
 
-Возвращает все заказы за период (все статусы). Лимит: 1 запр/мин.
+Возвращает все заказы за период (все статусы).
+
+Лимит: по доке 1 запр/мин, но **live-проверка 2026-08-08** отдала
+`x-ratelimit-remaining: 7` и `8` на двух разных кабинетах — фактический бакет больше,
+точный размер не замерен. Читать `x-ratelimit-remaining` из ответа
+(`X-Ratelimit-Limit`/`X-Ratelimit-Reset` живьём не приходят).
 
 ## sales — Продажи и возвраты
 
@@ -232,7 +266,8 @@ curl -X GET "https://statistics-api.wildberries.ru/api/v1/supplier/sales?dateFro
   -H "Authorization: Bearer TOKEN"
 ```
 
-Возвращает продажи и возвраты за период. Лимит: 1 запр/мин.
+Возвращает продажи и возвраты за период. Лимит: по доке 1 запр/мин; живьём не проверялся —
+у соседнего `/supplier/orders` бакет оказался больше заявленного (см. «Rate limits» выше).
 
 ## Ссылка на оригинал
 

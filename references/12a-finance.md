@@ -9,7 +9,10 @@
 **Хост:** `finance-api.wildberries.ru`  
 **Scope токена:** Finance  
 **Типы токенов:** Персональный, Сервисный (Basic и Sandbox — не поддерживаются)  
-**Rate limit:** **1 запрос / мин** на весь Finance API (всплеск 1)  
+**Rate limit:** **1 запрос / мин** на весь Finance API (всплеск 1) — подтверждено live 2026-08-08:
+после одного запроса к `/api/finance/v1/sales-reports/list` (200 OK) ответ несёт
+`x-ratelimit-remaining: 0`. Заголовков `X-Ratelimit-Limit`/`X-Ratelimit-Reset` в ответе нет,
+приходит только `x-ratelimit-remaining` — см. `01-rate-limits-retry.md`.  
 **Версия:** /api/v1/ и /api/finance/v1/
 
 ## Дата запуска и миграция
